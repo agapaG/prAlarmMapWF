@@ -33,6 +33,9 @@
             // 
             // AlarmMap
             // 
+            this.AlarmMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.AlarmMap.Bearing = 0F;
             this.AlarmMap.CanDragMap = true;
             this.AlarmMap.EmptyTileColor = System.Drawing.Color.Navy;
@@ -65,8 +68,7 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.AlarmMap);
             this.Name = "Map";
-            this.Text = "Map";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Text = "AlarmMap";
             this.Load += new System.EventHandler(this.Map_Load);
             this.Resize += new System.EventHandler(this.Map_Resize);
             this.ResumeLayout(false);

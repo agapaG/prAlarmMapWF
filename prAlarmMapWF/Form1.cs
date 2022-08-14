@@ -27,6 +27,7 @@ namespace prAlarmMapWF
         {
             InitializeComponent();
             this.WindowState = FormWindowState.Maximized;
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.LightGray;
             
         }
@@ -79,27 +80,32 @@ namespace prAlarmMapWF
 
 
             //Инициализация маркера и его координат
-            //PointLatLng dd = AlarmMap.F("Україна, Харків, Академіка Проскури вулиця, 10А");
+            GeoCoderStatusCode geoCoder;
+            PointLatLng dd = (PointLatLng)GMapProviders.OpenStreetMap.GetPoint("Україна, Харків, Академіка Проскури вулиця, 10А", out geoCoder);
+            if (dd != null )
+            {
+                markerGoogle = new GMarkerGoogle(new PointLatLng(dd.Lat, dd.Lng), GMarkerGoogleType.red);
+                markerGoogle.ToolTip = new GMapRoundedToolTip(markerGoogle);
 
-            markerGoogle = new GMarkerGoogle(new PointLatLng(50.04357, 36.28210), GMarkerGoogleType.red);
-            markerGoogle.ToolTip = new GMapRoundedToolTip(markerGoogle);
+                //dd = {{Lat=50,0445987, Lng=36,2824705789611}}
 
-            //dd = {{Lat=50,0445987, Lng=36,2824705789611}}
+                //Текст обображаемый с маркером
+                markerGoogle.ToolTipText = "Мой дом";
 
-            //Текст обображаемый с маркером
-            markerGoogle.ToolTipText = "Мой дом";
-
-            //Добавляю маркер в список маркеров
-            markersOverlay.Markers.Add(markerGoogle);
-            AlarmMap.Overlays.Add(markersOverlay);
+                //Добавляю маркер в список маркеров
+                markersOverlay.Markers.Add(markerGoogle);
+                AlarmMap.Overlays.Add(markersOverlay);
+            }
 
         }
 
         private void Map_Load(object sender, EventArgs e)
         {
-            Control ctrl = (Control)sender;
-            AlarmMap.Height = ctrl.Height;
-            AlarmMap.Width = ctrl.Width;
+            //Control ctrl = (Control)sender;
+            //AlarmMap.Height = ctrl.Height;
+            //AlarmMap.Width = ctrl.Width;
+            //ClientSize = new Size(ctrl.Width, ctrl.Height);
+            //FormBorderStyle = FormBorderStyle.FixedSingle;
 
             //GeoCoderStatusCode geoCoderStatusCode = new GeoCoderStatusCode();
             //PointLatLng? dd = GMapProviders.OpenStreetMap.GetPoint("Україна, Харків, Академіка Проскури вулиця, 10А", out geoCoderStatusCode);
@@ -108,9 +114,9 @@ namespace prAlarmMapWF
 
         private void Map_Resize(object sender, EventArgs e)
         {
-            Control ctrl = (Control)sender;
-            AlarmMap.Height = ctrl.Height;
-            AlarmMap.Width = ctrl.Width; 
+            //Control ctrl = (Control)sender;
+            //AlarmMap.Height = ctrl.Height;
+            //AlarmMap.Width = ctrl.Width; 
         }
     }
 }
