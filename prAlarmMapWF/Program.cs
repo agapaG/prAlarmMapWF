@@ -4,10 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using prAlarmMapWF.Data;
+
 namespace prAlarmMapWF
 {
-    internal static class Program
+    public static class Program
     {
+        public static List<n03> n03s = new List<n03>();
+
         /// <summary>
         /// Главная точка входа для приложения.
         /// </summary>

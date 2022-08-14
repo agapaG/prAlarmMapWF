@@ -21,15 +21,17 @@ namespace prAlarmMapWF
     {
         GMarkerGoogle markerGoogle = null;
         //Создам список маркеров
-        GMapOverlay markersOverlay = new GMapOverlay("markers");
+        GMapOverlay AlarmmarkersOverlay = new GMapOverlay("Alarms");
 
+        
         public Map()
         {
             InitializeComponent();
             this.WindowState = FormWindowState.Maximized;
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.LightGray;
-            
+
+            AlarmMap.Overlays.Add(AlarmmarkersOverlay);
         }
 
         private void AlarmMap_Load(object sender, EventArgs e)
@@ -64,7 +66,7 @@ namespace prAlarmMapWF
             AlarmMap.ShowTileGridLines = false;
 
             //При загрузке 13ти кратное увеличение
-            AlarmMap.Zoom = 13.135;
+            AlarmMap.Zoom = 12.95;
 
             //Убрать красный крестик по центру
             AlarmMap.ShowCenter = false;
@@ -93,8 +95,8 @@ namespace prAlarmMapWF
                 markerGoogle.ToolTipText = "Мой дом";
 
                 //Добавляю маркер в список маркеров
-                markersOverlay.Markers.Add(markerGoogle);
-                AlarmMap.Overlays.Add(markersOverlay);
+                AlarmmarkersOverlay.Markers.Add(markerGoogle);
+                
             }
 
         }
