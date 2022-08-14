@@ -98,25 +98,6 @@ namespace prAlarmMapWF
             }
 
         }
-
-        private void Map_Load(object sender, EventArgs e)
-        {
-            //Control ctrl = (Control)sender;
-            //AlarmMap.Height = ctrl.Height;
-            //AlarmMap.Width = ctrl.Width;
-            //ClientSize = new Size(ctrl.Width, ctrl.Height);
-            //FormBorderStyle = FormBorderStyle.FixedSingle;
-
-            //GeoCoderStatusCode geoCoderStatusCode = new GeoCoderStatusCode();
-            //PointLatLng? dd = GMapProviders.OpenStreetMap.GetPoint("Україна, Харків, Академіка Проскури вулиця, 10А", out geoCoderStatusCode);
-            
-        }
-
-        private void Map_Resize(object sender, EventArgs e)
-        {
-            //Control ctrl = (Control)sender;
-            //AlarmMap.Height = ctrl.Height;
-            //AlarmMap.Width = ctrl.Width; 
-        }
+                
     }
 }

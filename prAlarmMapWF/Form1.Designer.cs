@@ -69,8 +69,6 @@
             this.Controls.Add(this.AlarmMap);
             this.Name = "Map";
             this.Text = "AlarmMap";
-            this.Load += new System.EventHandler(this.Map_Load);
-            this.Resize += new System.EventHandler(this.Map_Resize);
             this.ResumeLayout(false);
 
         }
