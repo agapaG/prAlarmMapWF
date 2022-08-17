@@ -59,6 +59,36 @@ namespace prAlarmMapWF.DbServices
             return rez;
         }
 
+        public static int _get_rowscount()
+        {
+            int rowscount = 0;
+            string cmdtxt = "select count(*) from buff_work";
+            
+            try
+            {
+                using (SqlConnection mySql = new SqlConnection(cnn))
+                {
+                    using (SqlCommand cmd = new SqlCommand(cmdtxt, mySql))
+                    {
+                        mySql.Open();
+                        rowscount = (int)cmd.ExecuteScalar();
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                dbLog.Error(ex.Message);
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                dbLog.Error(ex.Message);
+                return -1;
+            }
+
+            return rowscount;
+        }
+
     }
 
 }

@@ -56,8 +56,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config\ConfigHelper.cs" />
+    <Compile Include="Data\CGeoLocData.cs" />
     <Compile Include="Data\ModelsFromDb.cs" />
     <Compile Include="Data\Package.cs" />
+    <Compile Include="DbServices\CGeoLocation.cs" />
     <Compile Include="DbServices\ReadBuffTbl.cs" />
     <Compile Include="DbServices\Readn03Tbl.cs" />
     <Compile Include="Form1.cs">

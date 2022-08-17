@@ -5,8 +5,9 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
+using System.Configuration;
 
 using GMap.NET;
 using GMap.NET.MapProviders;
@@ -14,6 +15,8 @@ using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using GMap.NET.WindowsForms.ToolTips;
 
+using prAlarmMapWF.DbServices;
+using prAlarmMapWF.Config;
 
 namespace prAlarmMapWF
 {
@@ -23,16 +26,45 @@ namespace prAlarmMapWF
         //Создам список маркеров
         GMapOverlay AlarmmarkersOverlay = new GMapOverlay("Alarms");
 
-        
+        readonly BackgroundWorker mapBgWorker = null;
+
         public Map()
         {
             InitializeComponent();
             this.WindowState = FormWindowState.Maximized;
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.LightGray;
-
+            //**********************************************************
+            string extbl = ConfigurationManager.AppSettings["ExistTbl"];
+            if (Equals(extbl, "0"))
+            {
+                CGeoLocation._create_geoloctbl("GeoLoc");
+                ConfigHelper.AddUpdateAppSettings("ExistTbl", "1");
+            }
+            //**********************************************************
+            Program.EndWork = false;
+            //**********************************************************
             AlarmMap.Overlays.Add(AlarmmarkersOverlay);
+            //**********************************************************
+
+
+            Program.n03s = Readn03Tbl._getn03();
+
+            #region Закулисье
+            mapBgWorker = new BackgroundWorker();
+            mapBgWorker.WorkerReportsProgress = true;
+            mapBgWorker.DoWork += Map_Work;
+            mapBgWorker.RunWorkerCompleted += MapBgWorker_RunWorkerCompleted;
+            mapBgWorker.ProgressChanged += MapBgWorker_ProgressChanged;
+            #endregion
+
         }
+
+        private void Map_Load(object sender, EventArgs e)
+        {
+            mapBgWorker.RunWorkerAsync();
+        }
+
 
         private void AlarmMap_Load(object sender, EventArgs e)
         {
@@ -80,26 +112,47 @@ namespace prAlarmMapWF
             //Стартовый центр карты
             AlarmMap.Position = new PointLatLng(49.989897385959935, 36.22941235773933);
 
-
+            /*
             //Инициализация маркера и его координат
-            GeoCoderStatusCode geoCoder;
-            PointLatLng dd = (PointLatLng)GMapProviders.OpenStreetMap.GetPoint("Україна, Харків, Академіка Проскури вулиця, 10А", out geoCoder);
-            if (dd != null )
+            try
             {
-                markerGoogle = new GMarkerGoogle(new PointLatLng(dd.Lat, dd.Lng), GMarkerGoogleType.red);
-                markerGoogle.ToolTip = new GMapRoundedToolTip(markerGoogle);
+                GeoCoderStatusCode geoCoder;
+                PointLatLng dd = (PointLatLng)GMapProviders.GoogleMap.GetPoint("Україна, Харків", out geoCoder);
+                if (dd != null)
+                {
+                    markerGoogle = new GMarkerGoogle(new PointLatLng(dd.Lat, dd.Lng), GMarkerGoogleType.red);
+                    markerGoogle.ToolTip = new GMapRoundedToolTip(markerGoogle);
 
-                //dd = {{Lat=50,0445987, Lng=36,2824705789611}}
+                    //dd = {{Lat=50,0445987, Lng=36,2824705789611}}
 
-                //Текст обображаемый с маркером
-                markerGoogle.ToolTipText = "Мой дом";
+                    //Текст обображаемый с маркером
+                    markerGoogle.ToolTipText = "Мой дом";
 
-                //Добавляю маркер в список маркеров
-                AlarmmarkersOverlay.Markers.Add(markerGoogle);
-                
+                    //Добавляю маркер в список маркеров
+                    AlarmmarkersOverlay.Markers.Add(markerGoogle);
+
+                }
             }
-
+            catch (Exception)
+            {
+                MessageBox.Show("Error");
+            }
+            */
         }
-                
+
+        private void checkBox1_Click(object sender, EventArgs e)
+        {
+            if (!checkBox1.Checked)
+                AlarmmarkersOverlay.Clear();
+        }
+
+        private void Map_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Program.EndWork = true;
+            Thread.Sleep(5);
+            if (mapBgWorker.IsBusy)
+                mapBgWorker.Dispose();
+        }
+              
     }
 }
