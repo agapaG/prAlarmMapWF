@@ -57,9 +57,7 @@ namespace prAlarmMapWF
             //**************************************************************
             Program.n03s = Readn03Tbl._getn03();
             Program.geoLocs = CGeoLocation._getGeoloc();
-            for (int i = 0; i < geoData.Rows.Count; ++i)
-                geoData[i].
-
+           
             //**************************************************************
 
                 #region Закулисье

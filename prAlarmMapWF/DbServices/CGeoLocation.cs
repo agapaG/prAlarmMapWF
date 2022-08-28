@@ -11,6 +11,8 @@ using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Configuration;
 
+using prAlarmMapWF.Data;
+
 using NLog;
 
 namespace prAlarmMapWF.DbServices
@@ -61,9 +63,10 @@ namespace prAlarmMapWF.DbServices
 
         }
 
-        public static DataTable _getGeoloc()
+        public static List<CGeoLocData> _getGeoloc()
         {
-            DataSet ds = new DataSet();
+            List<CGeoLocData> geoloc = new List<CGeoLocData>(); 
+
             string ConnStr = ConfigurationManager.ConnectionStrings["cnnStr"].ConnectionString;
             SqlCommand cmd = null;
 
@@ -75,8 +78,17 @@ namespace prAlarmMapWF.DbServices
                     cmd = sql.CreateCommand();
                     cmd.Prepare();
                     cmd.CommandText = "select * from GeoLoc";
-                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);   
-                    adapter.Fill(ds, "GeoLoc");
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        CGeoLocData cGeo = new CGeoLocData();
+                        cGeo.Latitude = reader.GetDouble(0);
+                        cGeo.Longitude = reader.GetDouble(1);
+                        cGeo.AddrC = reader.GetString(2);
+                        cGeo.AddrM = reader.GetString(3);
+
+                        geoloc.Add(cGeo);   
+                    }
                 }
                 catch (SqlException ex)
                 {
@@ -84,7 +96,7 @@ namespace prAlarmMapWF.DbServices
                     return null;
                 }
             }
-            return ds.Tables[0];
+            return geoloc;
         }
 
     }
