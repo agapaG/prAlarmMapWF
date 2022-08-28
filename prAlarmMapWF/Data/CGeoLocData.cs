@@ -10,6 +10,7 @@ namespace prAlarmMapWF.Data
     {
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        //public string 
+        public string AddrC { get; set; }
+        public string AddrM { get; set; }
     }
 }

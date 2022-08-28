@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Data;
+using System.Windows.Forms;
+
 using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Configuration;
@@ -24,8 +27,8 @@ namespace prAlarmMapWF.DbServices
             {
                 string sqlcmd = string.Format(@"If not exists 
                 (select name from sysobjects where name = '{0}') create table {0} (
-                Prot smallint NULL,
-                Ist tinyint NULL,
+                Latitude smallint NULL,
+                Longitude tinyint NULL,
                 Line tinyint NULL,
                 Acount char(4) NULL,
                 Code char(3) NULL,
@@ -56,6 +59,32 @@ namespace prAlarmMapWF.DbServices
                 }
             }
 
+        }
+
+        public static DataTable _getGeoloc()
+        {
+            DataSet ds = new DataSet();
+            string ConnStr = ConfigurationManager.ConnectionStrings["cnnStr"].ConnectionString;
+            SqlCommand cmd = null;
+
+            using (SqlConnection sql = new SqlConnection(ConnStr))
+            {
+                try
+                {
+                    sql.Open();
+                    cmd = sql.CreateCommand();
+                    cmd.Prepare();
+                    cmd.CommandText = "select * from GeoLoc";
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);   
+                    adapter.Fill(ds, "GeoLoc");
+                }
+                catch (SqlException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    return null;
+                }
+            }
+            return ds.Tables[0];
         }
 
     }

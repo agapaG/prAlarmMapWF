@@ -16,7 +16,10 @@ namespace prAlarmMapWF
         public static Logger outLog = NLog.LogManager.GetLogger("commonLog");
         public static bool EndWork { get; set; }
         public static List<n03> n03s = new List<n03>();
+        public static List<CGeoLocData> geoLocs = new List<CGeoLocData>();
         internal static int nRec { get; set; }
+
+
         //*******************************************************************************
 
 

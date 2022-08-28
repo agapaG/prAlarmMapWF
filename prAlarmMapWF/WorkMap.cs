@@ -20,12 +20,26 @@ using prAlarmMapWF.Data;
 
 namespace prAlarmMapWF
 {
+    internal class CPoint
+    {
+        public double X { get; set; }   
+        public double Y { get; set; }   
+        public CPoint(double x, double y)
+        {
+            X = x;
+            Y = y;
+        }
+    }
     public partial class Map : Form
     {
+        CPoint cPoint = new CPoint(49.989897385959935, 36.22941235773933);
+
+        GMapOverlay AlarmmarkersOverlay = new GMapOverlay("Alarms");
+
         int glMarCount = 0;
         int glMarCountCurr = 0;
-        List<DataPackage> dataPackages = null;
-
+        List<DataPackage> dataPackagesCurrent = null;
+        List<CGeoLocData> workGeoLocs = new List<CGeoLocData>();
 
 
         private void MapBgWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -38,7 +52,30 @@ namespace prAlarmMapWF
         }
         private void MapBgWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            throw new NotImplementedException();
+            //Очищаем список маркеров.
+            AlarmmarkersOverlay.Markers.Clear();
+
+            for (int i = 0; i < workGeoLocs.Count; i++)
+            {
+                GMapMarker marker = new GMarkerGoogle(
+                    new PointLatLng(workGeoLocs[i].Latitude, workGeoLocs[i].Longitude), GMarkerGoogleType.red_small);
+                marker.ToolTip = new GMapRoundedToolTip(marker);
+                Brush ToolTipBackColor = new SolidBrush(Color.Transparent);
+                marker.ToolTip.Fill = ToolTipBackColor;
+                //marker.ToolTip.Fill = Brushes.Black;
+                marker.ToolTip.Foreground = Brushes.Red;
+                marker.ToolTip.Stroke = Pens.Black;
+                marker.ToolTip.TextPadding = new Size(10, 10);
+                marker.ToolTipMode = MarkerTooltipMode.Always;
+                marker.ToolTipText = workGeoLocs[i].AddrC;
+                //marker.
+
+                AlarmmarkersOverlay.Markers.Add(marker);
+            }
+
+
+            eventWait.Set();
+
         }
 
         private void Map_Work(object sender, DoWorkEventArgs e)
@@ -46,6 +83,9 @@ namespace prAlarmMapWF
             while (!Program.EndWork)
             {
                 Thread.Sleep(10);
+                
+                eventWait.WaitOne();
+
                 try
                 {
                     int count = ReadBuff_WTbl._get_rowscount();
@@ -53,30 +93,30 @@ namespace prAlarmMapWF
                         continue;
                     glMarCountCurr = count;
 
-                    dataPackages = (List<DataPackage>)ReadBuff_WTbl._getbuff_work(Program.nRec);
-                    if (dataPackages.Count == 0)
-                        continue;
+                    dataPackagesCurrent = (List<DataPackage>)ReadBuff_WTbl._getbuff_work(Program.nRec);
+                    //if (dataPackages.Count == 0)
+                    //    continue;
 
-                    glMarCount = dataPackages.Count;
+                    //dataPackages = dataPackagesCurrent;
+                    glMarCount = dataPackagesCurrent.Count;
 
                     if (glMarCount != glMarCountCurr)
                     {
                     }
 
-                    for (int i = 0; i < dataPackages.Count; i++)
+                    for (int i = 0; i < dataPackagesCurrent.Count; i++)
                     {
-                        //Україна, Харків, Академіка Проскури вулиця, 10А
-                        StringBuilder sb = new StringBuilder();
-                        sb.Append("Україна, ");
-
-                        for (int j = 0; j < dataPackages[i].N03s.Count; ++j)
-                        {
-                            //string[] pars = dataPackages[i].N03s[i].Adr.Split(new char[''])
-                        }
+                        CGeoLocData cGeoLocData = new CGeoLocData();
+                        cGeoLocData = cGeoLocDatas.Find(item => item.AddrC.Equals(dataPackagesCurrent[i].N03s[0].Adr));
+                        workGeoLocs.Add(cGeoLocData);
                     }
                     
-                    if (dataPackages.Count != 0)
-                        Program.nRec = dataPackages[dataPackages.Count - 1].Rec;
+                    if (dataPackagesCurrent.Count != 0)
+                        Program.nRec = dataPackagesCurrent[dataPackagesCurrent.Count - 1].Rec;
+
+                    mapBgWorker.ReportProgress(100);
+
+
                 }
                 catch (ArgumentNullException ex)
                 {
@@ -86,6 +126,8 @@ namespace prAlarmMapWF
                 {
                     Program.outLog.Error(ex.Message);
                 }
+
+                eventWait.Reset();
 
             }
         }

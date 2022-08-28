@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.AlarmMap = new GMap.NET.WindowsForms.GMapControl();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // AlarmMap
@@ -62,40 +61,23 @@
             this.AlarmMap.Zoom = 0D;
             this.AlarmMap.Load += new System.EventHandler(this.AlarmMap_Load);
             // 
-            // checkBox1
-            // 
-            this.checkBox1.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(12, 156);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(63, 20);
-            this.checkBox1.TabIndex = 1;
-            this.checkBox1.Text = "cTest";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.Click += new System.EventHandler(this.checkBox1_Click);
-            // 
             // Map
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.AlarmMap);
             this.Name = "Map";
             this.Text = "AlarmMap";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Map_FormClosing);
             this.Load += new System.EventHandler(this.Map_Load);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
         private GMap.NET.WindowsForms.GMapControl AlarmMap;
-        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 
