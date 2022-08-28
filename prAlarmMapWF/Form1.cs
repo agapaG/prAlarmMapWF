@@ -56,11 +56,11 @@ namespace prAlarmMapWF
 
             //**************************************************************
             Program.n03s = Readn03Tbl._getn03();
-            Program.geoLocs = CGeoLocation._getGeoloc();
+            cGeoLocDatas = CGeoLocation._getGeoloc();
            
             //**************************************************************
 
-                #region Закулисье
+            #region Закулисье
             mapBgWorker = new BackgroundWorker();
             mapBgWorker.WorkerReportsProgress = true;
             mapBgWorker.DoWork += Map_Work;
@@ -79,34 +79,7 @@ namespace prAlarmMapWF
         }
 
         private void Map_Load(object sender, EventArgs e)
-        {
-            string[] split = null;
-            string str;
-            NumberFormatInfo provide = new NumberFormatInfo();
-            provide.NumberDecimalSeparator = ",";
-            try
-            {
-                using (StreamReader sr = new StreamReader("forshow"))
-                {
-                    while ((str = sr.ReadLine()) != null)
-                    {
-                        CGeoLocData cGeoLocData = new CGeoLocData();
-                        split = str.Split('\t');
-                        cGeoLocData.Latitude = Convert.ToDouble(split[0], provide);
-                        cGeoLocData.Longitude = Convert.ToDouble(split[1], provide);
-                        cGeoLocData.AddrC = split[2];
-                        cGeoLocData.AddrM = split[3];
-
-                        cGeoLocDatas.Add(cGeoLocData);
-                    }
-                }
-            }
-            catch (IOException ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-
-
+        {            
             mapBgWorker.RunWorkerAsync();
         }
 

@@ -60,12 +60,12 @@ namespace prAlarmMapWF
                 GMapMarker marker = new GMarkerGoogle(
                     new PointLatLng(workGeoLocs[i].Latitude, workGeoLocs[i].Longitude), GMarkerGoogleType.red_small);
                 marker.ToolTip = new GMapRoundedToolTip(marker);
-                Brush ToolTipBackColor = new SolidBrush(Color.Transparent);
-                marker.ToolTip.Fill = ToolTipBackColor;
-                //marker.ToolTip.Fill = Brushes.Black;
-                marker.ToolTip.Foreground = Brushes.Red;
+                //Brush ToolTipBackColor = new SolidBrush(Color.Transparent);
+                //marker.ToolTip.Fill = ToolTipBackColor;
+                marker.ToolTip.Fill = Brushes.LightGray;
+                marker.ToolTip.Foreground = Brushes.Black;
                 marker.ToolTip.Stroke = Pens.Black;
-                marker.ToolTip.TextPadding = new Size(10, 10);
+                marker.ToolTip.TextPadding = new Size(5, 5);
                 marker.ToolTipMode = MarkerTooltipMode.Always;
                 marker.ToolTipText = workGeoLocs[i].AddrC;
                 //marker.
@@ -108,7 +108,8 @@ namespace prAlarmMapWF
                     {
                         CGeoLocData cGeoLocData = new CGeoLocData();
                         cGeoLocData = cGeoLocDatas.Find(item => item.AddrC.Equals(dataPackagesCurrent[i].N03s[0].Adr));
-                        workGeoLocs.Add(cGeoLocData);
+                        if (cGeoLocData != null)    
+                            workGeoLocs.Add(cGeoLocData);
                     }
                     
                     if (dataPackagesCurrent.Count != 0)

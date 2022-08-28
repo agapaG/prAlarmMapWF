@@ -39,8 +39,9 @@ namespace prAlarmMapWF.DbServices
                         tbl.Rec = reader.GetInt32(9);
                                                 
                         tbl.N03s = Program.n03s.FindAll(item => Equals(item.Nb, tbl.Tcentral));
-
-                        rez.Add(tbl);
+                        
+                        if (tbl.N03s.Count != 0)   
+                            rez.Add(tbl);
                     }
                 }
                 catch (SqlException ex)
