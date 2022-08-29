@@ -25,11 +25,8 @@ namespace prAlarmMapWF
 {
     public partial class Map : Form
     { 
-        DataTable geoData = null;   
 
         List<CGeoLocData> cGeoLocDatas = new List<CGeoLocData>();
-
-        GMapOverlay markersOverlay = new GMapOverlay("Test");
 
         readonly BackgroundWorker mapBgWorker = null;
         EventWaitHandle eventWait;
@@ -51,7 +48,7 @@ namespace prAlarmMapWF
             Program.EndWork = false;
             //**********************************************************
             AlarmMap.Overlays.Add(AlarmmarkersOverlay);
-            AlarmMap.Overlays.Add(markersOverlay);
+            AlarmMap.Overlays.Add(AlarmmarkersOverlayp13);
             //**********************************************************
 
             //**************************************************************
