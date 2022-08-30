@@ -77,7 +77,7 @@ namespace prAlarmMapWF
                     marker.ToolTip.TextPadding = new Size(5, 5);
                     marker.ToolTipMode = MarkerTooltipMode.Always;
                     marker.ToolTipText = workGeoLocs[i].AddrC;
-                    marker.Size = new Size(2, 2);
+                    //marker.Size = new Size(2, 2);
                     //marker.
 
                     AlarmmarkersOverlay.Markers.Add(marker);
@@ -86,10 +86,10 @@ namespace prAlarmMapWF
                 {
 
                     Bitmap bmp8 = _createLeftMarker(workGeoLocs[i].AddrC);
-                    //GMapMarker marker1 = new GMarkerGoogle(
-                    //    new PointLatLng(cPoint.X + x1*2.6f/3 , cPoint.Y + y1*2.6f/3), bmp8);
                     GMapMarker marker1 = new GMarkerGoogle(
-                        new PointLatLng(cPoint.X + x1 , cPoint.Y + y1), bmp8);
+                        new PointLatLng(cPoint.X + x1*2.7f/3 , cPoint.Y + y1*2.7f/3), bmp8);
+                    //GMapMarker marker1 = new GMarkerGoogle(
+                    //    new PointLatLng(cPoint.X + x1 , cPoint.Y + y1), bmp8);
                     //marker1.Offset = new Point(-bmp8.Width / 2, -bmp8.Height / 2);
                     //marker1.Offset = new Point(bmp8.Width, 0);
                     AlarmmarkersOverlayp13.Markers.Add(marker1);
