@@ -49,6 +49,7 @@ namespace prAlarmMapWF
             //**********************************************************
             AlarmMap.Overlays.Add(AlarmmarkersOverlay);
             AlarmMap.Overlays.Add(AlarmmarkersOverlayp13);
+            AlarmMap.Overlays.Add(AlarmmpolyOverlay);
             //**********************************************************
 
             //**************************************************************
@@ -76,7 +77,33 @@ namespace prAlarmMapWF
         }
 
         private void Map_Load(object sender, EventArgs e)
-        {            
+        {
+            //markLeft.BackColor = ToolTipBackColor;
+
+            //Левый верх
+            pointLatLngs.Add(new PointLatLng(AlarmMap.ViewArea.Top-0.012, AlarmMap.ViewArea.Left));
+            //Левый низ
+            pointLatLngs.Add(new PointLatLng(AlarmMap.ViewArea.Top-AlarmMap.ViewArea.Size.HeightLat,
+                AlarmMap.ViewArea.Left));
+            //Правый низ
+            pointLatLngs.Add(new PointLatLng(AlarmMap.ViewArea.Bottom, AlarmMap.ViewArea.Right));
+            //Правый верх
+            pointLatLngs.Add(new PointLatLng(AlarmMap.ViewArea.Bottom + AlarmMap.ViewArea.Size.HeightLat - 0.012,
+                AlarmMap.ViewArea.Right));
+
+            GMapPolygon mapPolygon = new GMapPolygon(pointLatLngs, "poly");
+            Brush ToolTipBackColor = new SolidBrush(Color.Transparent);
+            //mapPolygon.Fill = ToolTipBackColor;
+            //mapPolygon.Stroke = new Pen(Color.Transparent,0);
+            mapPolygon.IsVisible = false;
+            AlarmmpolyOverlay.Polygons.Add(mapPolygon);
+
+            Polygones = AlarmmpolyOverlay.Polygons;
+
+
+            MessageBox.Show($"WidthLng {AlarmMap.ViewArea.WidthLng}");
+            MessageBox.Show($"HeightLat {AlarmMap.ViewArea.HeightLat}");
+
             mapBgWorker.RunWorkerAsync();
         }
 
@@ -96,7 +123,7 @@ namespace prAlarmMapWF
 
             //Максимальное/Минимальное приближения
             AlarmMap.MaxZoom = 18;
-            AlarmMap.MinZoom = 5; //12
+            AlarmMap.MinZoom = 7; //12 -> 7
 
             //Курсор мыши в центр карты
             AlarmMap.MouseWheelZoomType = MouseWheelZoomType.MousePositionWithoutCenter;
@@ -123,7 +150,7 @@ namespace prAlarmMapWF
             
 
             //Стартовый центр карты
-            AlarmMap.Position = new PointLatLng(cPoint.X, cPoint.Y);
+            AlarmMap.Position = new PointLatLng(cPoint.Y, cPoint.X);
 
             //При загрузке 13ти кратное увеличение
             AlarmMap.Zoom = 12.99;
@@ -168,7 +195,28 @@ namespace prAlarmMapWF
                 MessageBox.Show("Error");
             }
             */
-            
+            //MessageBox.Show($"Lat - {AlarmMap.Position.Lat}  Long {AlarmMap.Position.Lng}");
+
+            //MessageBox.Show($"CLat - {AlarmMap.ViewArea.LocationTopLeft.Lat}  CLong {AlarmMap.ViewArea.LocationTopLeft.Lng}");
+            //MessageBox.Show($"CLat - {AlarmMap.ViewArea.LocationRightBottom.Lat}  CLong {AlarmMap.ViewArea.LocationRightBottom.Lng}");
+            //MessageBox.Show($"CMLat - {AlarmMap.ViewArea.LocationMiddle.Lat}  CMLong {AlarmMap.ViewArea.LocationMiddle.Lng}");
+
+            //MessageBox.Show($"WidthLng {AlarmMap.ViewArea.WidthLng}");
+            //MessageBox.Show($"HeightLat {AlarmMap.ViewArea.HeightLat}");
+
+            //MessageBox.Show($"Top {AlarmMap.ViewArea.Top}");
+            //MessageBox.Show($"Left {AlarmMap.ViewArea.Left}");
+
+            //MessageBox.Show($"Right {AlarmMap.ViewArea.Right}");
+            //MessageBox.Show($"Bottom {AlarmMap.ViewArea.Bottom}");
+
+            //MessageBox.Show($"Lat {AlarmMap.ViewArea.Lat}");
+            //MessageBox.Show($"Lng {AlarmMap.ViewArea.Lng}");
+            //MessageBox.Show($"Lng {AlarmMap.ViewArea.Size}");
+
+            //textBox1.Text = AlarmMap.ViewArea.Top.ToString();
+            //textBox2.Text = AlarmMap.ViewArea.Left.ToString();   
+
         }
 
         private void Map_FormClosing(object sender, FormClosingEventArgs e)
@@ -178,6 +226,25 @@ namespace prAlarmMapWF
             if (mapBgWorker.IsBusy)
                 mapBgWorker.Dispose();
         }
-              
+
+        private void AlarmMap_Scroll(object sender, ScrollEventArgs e)
+        {
+            AlarmMap.Position = new PointLatLng(cPoint.X, cPoint.Y);
+        }
+
+        private void AlarmMap_MouseClick(object sender, MouseEventArgs e)
+        {
+            tLan.Text = AlarmMap.FromLocalToLatLng(e.X,e.Y).Lat.ToString();
+            tLng.Text = AlarmMap.FromLocalToLatLng(e.X, e.Y).Lng .ToString();   
+        }
+
+        private void bSize_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show($"Top {AlarmMap.ViewArea.Top} Left {AlarmMap.ViewArea.Left}\n" +
+                $"Right {AlarmMap.ViewArea.Right} Bottom {AlarmMap.ViewArea.Bottom}\n" +
+                $"{AlarmMap.ViewArea.Size}"
+                );
+            
+        }
     }
 }

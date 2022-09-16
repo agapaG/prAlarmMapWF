@@ -13,6 +13,7 @@ using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using GMap.NET.WindowsForms.ToolTips;
+using GMap.NET.ObjectModel;
 
 using prAlarmMapWF.DbServices;
 using prAlarmMapWF.Data;
@@ -25,7 +26,7 @@ namespace prAlarmMapWF
     {
         public double X { get; set; }   
         public double Y { get; set; }   
-        public CPoint(double x, double y)
+        public CPoint(double y, double x)
         {
             X = x;
             Y = y;
@@ -37,6 +38,10 @@ namespace prAlarmMapWF
 
         GMapOverlay AlarmmarkersOverlay = new GMapOverlay("Alarms");
         GMapOverlay AlarmmarkersOverlayp13 = new GMapOverlay("Alarmsp13");
+
+        GMapOverlay AlarmmpolyOverlay = new GMapOverlay("polygons");
+        List<PointLatLng> pointLatLngs = new List<PointLatLng>();
+        ObservableCollectionThreadSafe<GMapPolygon> Polygones = null;
 
 
         int glMarCount = 0;
@@ -58,12 +63,54 @@ namespace prAlarmMapWF
             //Очищаем список маркеров.
             AlarmmarkersOverlay.Markers.Clear();
 
+            //CPoint pW = new CPoint(50.11279341666608, 36.11084117131164);
+            //double Lat = pW.Y - cPoint.Y;
+            //double Lon = pW.X - cPoint.X;
+            //double m = Math.Sqrt(Lat * Lat + Lon * Lon);
+            //MessageBox.Show($"Top {AlarmMap.ViewArea.Top}");
+            //MessageBox.Show($"Left {AlarmMap.ViewArea.Left}");
+            GMapMarker markT = new GMarkerGoogle(
+                       new PointLatLng(cPoint.Y + (AlarmMap.ViewArea.HeightLat/2 - 0.03), cPoint.X + (AlarmMap.ViewArea.WidthLng/2 - 0.06)), GMarkerGoogleType.red_pushpin);
+            markT.ToolTip = new GMapBaloonToolTip(markT);
+            markT.ToolTip.Fill = Brushes.LightGray;
+            markT.ToolTip.Foreground = Brushes.Black;
+            markT.ToolTip.Stroke = Pens.Black;
+            markT.ToolTip.TextPadding = new Size(5, 5);
+            markT.ToolTipMode = MarkerTooltipMode.Always;
+
+            AlarmmarkersOverlay.Markers.Add(markT);
+
             for (int i = 0; i < workGeoLocs.Count; i++)
             {
-                double x1 = workGeoLocs[i].Latitude - cPoint.X;
-                double y1 = workGeoLocs[i].Longitude - cPoint.Y;
+                double x1 = workGeoLocs[i].Latitude - cPoint.Y;
+                double y1 = workGeoLocs[i].Longitude - cPoint.X;
                 double mod = Math.Sqrt(x1 * x1 + y1 * y1);
 
+                PointLatLng currenyPoint = new PointLatLng(workGeoLocs[i].Latitude, workGeoLocs[i].Longitude);
+                
+                                
+                for (int j = 0; j < Polygones.Count; j++)
+                {
+                     if (Polygones[j].IsInside(currenyPoint))
+                    {
+                        GMapMarker marker = new GMarkerGoogle(
+                        new PointLatLng(workGeoLocs[i].Latitude, workGeoLocs[i].Longitude), GMarkerGoogleType.red_small);
+                        marker.ToolTip = new GMapRoundedToolTip(marker);
+                        //Brush ToolTipBackColor = new SolidBrush(Color.Transparent);
+                        //marker.ToolTip.Fill = ToolTipBackColor;
+                        marker.ToolTip.Fill = Brushes.LightGray;
+                        marker.ToolTip.Foreground = Brushes.Black;
+                        marker.ToolTip.Stroke = Pens.Black;
+                        marker.ToolTip.TextPadding = new Size(5, 5);
+                        marker.ToolTipMode = MarkerTooltipMode.Always;
+                        marker.ToolTipText = workGeoLocs[i].AddrC;
+                        //marker.Size = new Size(2, 2);
+                        
+
+                        AlarmmarkersOverlay.Markers.Add(marker);
+                    }    
+                }
+                /*
                 if (mod < (0.009 * 13.1))
                 {
                     GMapMarker marker = new GMarkerGoogle(
@@ -94,7 +141,68 @@ namespace prAlarmMapWF
                     //marker1.Offset = new Point(bmp8.Width, 0);
                     AlarmmarkersOverlayp13.Markers.Add(marker1);
                 }
+                
+                if (x1 > 0 && y1 > 0)
+                {
+                    GMapMarker mark = new GMarkerGoogle(
+                       new PointLatLng(cPoint.X + 1.0f/3, cPoint.Y + 1.0f/3), GMarkerGoogleType.red_pushpin);
+                    mark.ToolTip = new GMapBaloonToolTip(mark);
+                    mark.ToolTip.Fill = Brushes.LightGray;
+                    mark.ToolTip.Foreground = Brushes.Black;
+                    mark.ToolTip.Stroke = Pens.Black;
+                    mark.ToolTip.TextPadding = new Size(5, 5);
+                    mark.ToolTipMode = MarkerTooltipMode.Always;
+                    mark.ToolTipText = "I четверть";
 
+                    AlarmmarkersOverlay.Markers.Add(mark);
+                }
+
+                if (x1 < 0 && y1 > 0)
+                {
+                    GMapMarker mark = new GMarkerGoogle(
+                       new PointLatLng(cPoint.X + 1.7f/3, cPoint.Y - 1.7f/3), GMarkerGoogleType.red_pushpin);
+                    mark.ToolTip = new GMapBaloonToolTip(mark);
+                    mark.ToolTip.Fill = Brushes.LightGray;
+                    mark.ToolTip.Foreground = Brushes.Black;
+                    mark.ToolTip.Stroke = Pens.Black;
+                    mark.ToolTip.TextPadding = new Size(5, 5);
+                    mark.ToolTipMode = MarkerTooltipMode.Always;
+                    mark.ToolTipText = "II четверть";
+
+                    AlarmmarkersOverlay.Markers.Add(mark);
+                }
+
+                if (x1 < 0 && y1 < 0)
+                {
+                    GMapMarker mark = new GMarkerGoogle(
+                       new PointLatLng(cPoint.X - 1.7f/3, cPoint.Y - 1.7f/3), GMarkerGoogleType.red_pushpin);
+                    mark.ToolTip = new GMapBaloonToolTip(mark);
+                    mark.ToolTip.Fill = Brushes.LightGray;
+                    mark.ToolTip.Foreground = Brushes.Black;
+                    mark.ToolTip.Stroke = Pens.Black;
+                    mark.ToolTip.TextPadding = new Size(5, 5);
+                    mark.ToolTipMode = MarkerTooltipMode.Always;
+                    mark.ToolTipText = "III четверть";
+
+                    AlarmmarkersOverlay.Markers.Add(mark);
+                }
+                
+                if (x1 > 0 && y1 < 0)
+                {
+                    GMapMarker mark = new GMarkerGoogle(
+                       new PointLatLng(cPoint.X + mod/3.2, cPoint.Y - mod/3), GMarkerGoogleType.red_pushpin);
+                    mark.ToolTip = new GMapBaloonToolTip(mark);
+                    mark.ToolTip.Fill = Brushes.LightGray;
+                    mark.ToolTip.Foreground = Brushes.Black;
+                    mark.ToolTip.Stroke = Pens.Black;
+                    mark.ToolTip.TextPadding = new Size(5, 5);
+                    mark.ToolTipMode = MarkerTooltipMode.Always;
+                    //mark.ToolTipText = "IV четверть";
+                    //mark.ToolTipText = "";
+
+                    AlarmmarkersOverlay.Markers.Add(mark);
+                }
+                */
             }
 
 
