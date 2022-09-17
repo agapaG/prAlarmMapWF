@@ -269,10 +269,16 @@ namespace prAlarmMapWF
                     
                     if (dataPackagesCurrent.Count != 0)
                         Program.nRec = dataPackagesCurrent[dataPackagesCurrent.Count - 1].Rec;
-                                        
+
+                    //**********************************************
+                    CGeoLocData cGD = new CGeoLocData();
+                    cGD.AddrC = "Test";
+                    cGD.AddrM = "...";
+                    cGD.Latitude = 49.9264719192719;
+                    cGD.Longitude = 36.0543823242188;
+                    workGeoLocs.Add(cGD);
+                    //***********************************************
                     mapBgWorker.ReportProgress(100);
-
-
                 }
                 catch (ArgumentNullException ex)
                 {
