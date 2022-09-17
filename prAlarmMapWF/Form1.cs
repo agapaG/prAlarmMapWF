@@ -100,9 +100,12 @@ namespace prAlarmMapWF
 
             Polygones = AlarmmpolyOverlay.Polygons;
 
+            Height1per100 = AlarmMap.ViewArea.HeightLat/100;
+            WWidth1per100 = AlarmMap.ViewArea.WidthLng/100;
 
-            MessageBox.Show($"WidthLng {AlarmMap.ViewArea.WidthLng}");
-            MessageBox.Show($"HeightLat {AlarmMap.ViewArea.HeightLat}");
+
+            //MessageBox.Show($"WidthLng {AlarmMap.ViewArea.WidthLng}");
+            //MessageBox.Show($"HeightLat {AlarmMap.ViewArea.HeightLat}");
 
             mapBgWorker.RunWorkerAsync();
         }
@@ -113,7 +116,7 @@ namespace prAlarmMapWF
             //Настройки для компонента GMap
             AlarmMap.Bearing = 0; //Горизонтальное положение карты
             //Возможность перетаскивать карту левой кнопкой мыши
-            AlarmMap.CanDragMap = true;
+            AlarmMap.CanDragMap = false;
             AlarmMap.DragButton = MouseButtons.Left;
 
             AlarmMap.GrayScaleMode = true;
@@ -123,7 +126,7 @@ namespace prAlarmMapWF
 
             //Максимальное/Минимальное приближения
             AlarmMap.MaxZoom = 18;
-            AlarmMap.MinZoom = 7; //12 -> 7
+            AlarmMap.MinZoom = 9; //12 -> 7
 
             //Курсор мыши в центр карты
             AlarmMap.MouseWheelZoomType = MouseWheelZoomType.MousePositionWithoutCenter;

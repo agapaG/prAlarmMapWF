@@ -36,6 +36,9 @@ namespace prAlarmMapWF
     {
         CPoint cPoint = new CPoint(49.989897385959935, 36.22941235773933);
 
+        double Height1per100;
+        double WWidth1per100;
+
         GMapOverlay AlarmmarkersOverlay = new GMapOverlay("Alarms");
         GMapOverlay AlarmmarkersOverlayp13 = new GMapOverlay("Alarmsp13");
 
@@ -63,14 +66,20 @@ namespace prAlarmMapWF
             //Очищаем список маркеров.
             AlarmmarkersOverlay.Markers.Clear();
 
+            //точка для анализа
+            //lat 49,9264719192719
+            //long 36,0543823242188
+
             //CPoint pW = new CPoint(50.11279341666608, 36.11084117131164);
             //double Lat = pW.Y - cPoint.Y;
             //double Lon = pW.X - cPoint.X;
             //double m = Math.Sqrt(Lat * Lat + Lon * Lon);
-            //MessageBox.Show($"Top {AlarmMap.ViewArea.Top}");
-            //MessageBox.Show($"Left {AlarmMap.ViewArea.Left}");
+
+            double pLat = cPoint.Y - Height1per100*2;
+            double pLong = cPoint.X - WWidth1per100*13;
+            
             GMapMarker markT = new GMarkerGoogle(
-                       new PointLatLng(cPoint.Y + (AlarmMap.ViewArea.HeightLat/2 - 0.03), cPoint.X + (AlarmMap.ViewArea.WidthLng/2 - 0.06)), GMarkerGoogleType.red_pushpin);
+                       new PointLatLng(pLat, pLong), GMarkerGoogleType.red_pushpin);
             markT.ToolTip = new GMapBaloonToolTip(markT);
             markT.ToolTip.Fill = Brushes.LightGray;
             markT.ToolTip.Foreground = Brushes.Black;
@@ -79,6 +88,16 @@ namespace prAlarmMapWF
             markT.ToolTipMode = MarkerTooltipMode.Always;
 
             AlarmmarkersOverlay.Markers.Add(markT);
+
+            //*******************************************************
+            double x = pLong - cPoint.X;
+            double y = pLat - cPoint.Y;
+            double Mod = Math.Sqrt(x * x + y * y);
+            double cosalpfa = x / Mod;
+            double alpa = Math.Acos(cosalpfa)*(180/Math.PI);
+            //MessageBox.Show($"{alpa} градусов");
+
+            //*******************************************************
 
             for (int i = 0; i < workGeoLocs.Count; i++)
             {
@@ -91,7 +110,7 @@ namespace prAlarmMapWF
                                 
                 for (int j = 0; j < Polygones.Count; j++)
                 {
-                     if (Polygones[j].IsInside(currenyPoint))
+                    if (Polygones[j].IsInside(currenyPoint))
                     {
                         GMapMarker marker = new GMarkerGoogle(
                         new PointLatLng(workGeoLocs[i].Latitude, workGeoLocs[i].Longitude), GMarkerGoogleType.red_small);
@@ -108,7 +127,11 @@ namespace prAlarmMapWF
                         
 
                         AlarmmarkersOverlay.Markers.Add(marker);
-                    }    
+                    }
+                    else
+                    {
+
+                    }
                 }
                 /*
                 if (mod < (0.009 * 13.1))
@@ -220,21 +243,21 @@ namespace prAlarmMapWF
 
                 try
                 {
-                    int count = ReadBuff_WTbl._get_rowscount();
-                    if (count < 0)
-                        continue;
-                    glMarCountCurr = count;
+                    //int count = ReadBuff_WTbl._get_rowscount();
+                    //if (count < 0)
+                    //    continue;
+                    //glMarCountCurr = count;
 
                     dataPackagesCurrent = (List<DataPackage>)ReadBuff_WTbl._getbuff_work(Program.nRec);
                     //if (dataPackages.Count == 0)
                     //    continue;
 
                     //dataPackages = dataPackagesCurrent;
-                    glMarCount = dataPackagesCurrent.Count;
+                    //glMarCount = dataPackagesCurrent.Count;
 
-                    if (glMarCount != glMarCountCurr)
-                    {
-                    }
+                    //if (glMarCount != glMarCountCurr)
+                    //{
+                    //}
 
                     for (int i = 0; i < dataPackagesCurrent.Count; i++)
                     {
@@ -246,7 +269,7 @@ namespace prAlarmMapWF
                     
                     if (dataPackagesCurrent.Count != 0)
                         Program.nRec = dataPackagesCurrent[dataPackagesCurrent.Count - 1].Rec;
-
+                                        
                     mapBgWorker.ReportProgress(100);
 
 
