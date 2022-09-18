@@ -46,9 +46,7 @@ namespace prAlarmMapWF
         List<PointLatLng> pointLatLngs = new List<PointLatLng>();
         ObservableCollectionThreadSafe<GMapPolygon> Polygones = null;
 
-
-        int glMarCount = 0;
-        int glMarCountCurr = 0;
+              
         List<DataPackage> dataPackagesCurrent = null;
         List<CGeoLocData> workGeoLocs = new List<CGeoLocData>();
 
@@ -65,10 +63,7 @@ namespace prAlarmMapWF
         {
             //Очищаем список маркеров.
             AlarmmarkersOverlay.Markers.Clear();
-
-            //точка для анализа
-            //lat 49,9264719192719
-            //long 36,0543823242188
+                       
 
             //CPoint pW = new CPoint(50.11279341666608, 36.11084117131164);
             //double Lat = pW.Y - cPoint.Y;
@@ -109,7 +104,7 @@ namespace prAlarmMapWF
                 
                                 
                 for (int j = 0; j < Polygones.Count; j++)
-                {
+                {                    
                     if (Polygones[j].IsInside(currenyPoint))
                     {
                         GMapMarker marker = new GMarkerGoogle(
@@ -130,7 +125,23 @@ namespace prAlarmMapWF
                     }
                     else
                     {
+                        if ()
+                        {
 
+                        }
+                        GMapMarker marker = new GMarkerGoogle(
+                        new PointLatLng(workGeoLocs[i].Latitude, workGeoLocs[i].Longitude), GMarkerGoogleType.red_small);
+                        marker.ToolTip = new GMapRoundedToolTip(marker);
+                        //Brush ToolTipBackColor = new SolidBrush(Color.Transparent);
+                        //marker.ToolTip.Fill = ToolTipBackColor;
+                        marker.ToolTip.Fill = Brushes.LightGray;
+                        marker.ToolTip.Foreground = Brushes.Black;
+                        marker.ToolTip.Stroke = Pens.Black;
+                        marker.ToolTip.TextPadding = new Size(5, 5);
+                        marker.ToolTipMode = MarkerTooltipMode.Always;
+                        marker.ToolTipText = workGeoLocs[i].AddrC + "ОНО";
+
+                        AlarmmarkersOverlay.Markers.Add(marker);
                     }
                 }
                 /*
@@ -228,7 +239,7 @@ namespace prAlarmMapWF
                 */
             }
 
-
+            workGeoLocs.RemoveAt(workGeoLocs.Count - 1);
             eventWait.Set();
 
         }
@@ -271,11 +282,14 @@ namespace prAlarmMapWF
                         Program.nRec = dataPackagesCurrent[dataPackagesCurrent.Count - 1].Rec;
 
                     //**********************************************
+                    //точка для анализа
+                    //lat 49,899942109186
+                    //long 35,809936523
                     CGeoLocData cGD = new CGeoLocData();
                     cGD.AddrC = "Test";
                     cGD.AddrM = "...";
-                    cGD.Latitude = 49.9264719192719;
-                    cGD.Longitude = 36.0543823242188;
+                    cGD.Latitude = 49.899942109186;
+                    cGD.Longitude = 35.809936523;
                     workGeoLocs.Add(cGD);
                     //***********************************************
                     mapBgWorker.ReportProgress(100);
