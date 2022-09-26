@@ -29,7 +29,7 @@ namespace prAlarmMapWF
         List<CGeoLocData> cGeoLocDatas = new List<CGeoLocData>();
 
         readonly BackgroundWorker mapBgWorker = null;
-        EventWaitHandle eventWait;
+        
 
         public Map()
         {
@@ -37,13 +37,7 @@ namespace prAlarmMapWF
             this.WindowState = FormWindowState.Maximized;
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.LightGray;
-            //**********************************************************
-            string extbl = ConfigurationManager.AppSettings["ExistTbl"];
-            if (Equals(extbl, "0"))
-            {
-                CGeoLocation._create_geoloctbl("GeoLoc");
-                ConfigHelper.AddUpdateAppSettings("ExistTbl", "1");
-            }
+            
             //**********************************************************
             Program.EndWork = false;
             //**********************************************************
@@ -70,10 +64,11 @@ namespace prAlarmMapWF
             //*****************************************************************
             #region Signal
             eventWait = new EventWaitHandle(true, EventResetMode.ManualReset);
+            eventWaitProc = new EventWaitHandle(false, EventResetMode.AutoReset);
             #endregion
 
             //*****************************************************************
-                        
+
         }
 
         private void Map_Load(object sender, EventArgs e)
@@ -126,7 +121,7 @@ namespace prAlarmMapWF
 
             //Максимальное/Минимальное приближения
             AlarmMap.MaxZoom = 18;
-            AlarmMap.MinZoom = 9; //12 -> 7
+            AlarmMap.MinZoom = 10; //12 -> 7
 
             //Курсор мыши в центр карты
             AlarmMap.MouseWheelZoomType = MouseWheelZoomType.MousePositionWithoutCenter;
