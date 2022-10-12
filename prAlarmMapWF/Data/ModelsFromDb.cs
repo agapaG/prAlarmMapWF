@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 namespace prAlarmMapWF.Data
 {
     public class n03
-    {        
+    { 
         public string Adr { get; set; }
         public string Nb { get; set; }   
     }    

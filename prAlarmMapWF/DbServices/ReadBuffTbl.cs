@@ -15,6 +15,7 @@ namespace prAlarmMapWF.DbServices
         static Logger dbLog = NLog.LogManager.GetLogger("dbLog");
 
         static string cnn = ConfigurationManager.ConnectionStrings["cnnStr"].ConnectionString;
+        static string TblName = ConfigurationManager.AppSettings["TblName"];
 
         public static ICollection<DataPackage> _getbuff_work(int Rec)
         {
@@ -29,13 +30,13 @@ namespace prAlarmMapWF.DbServices
                     mySql.Open();
                     cmd = mySql.CreateCommand();
                     cmd.   Prepare();
-                    cmd.CommandText = $"select * from buff_work where Rec > {Rec}";
+                    cmd.CommandText = $"select * from {TblName} where Rec > {Rec}";
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
                         DataPackage tbl = new DataPackage();
                         tbl.Tcentral = reader.IsDBNull(3) ? null : reader.GetString(3);
-                        
+                        tbl.Time = reader.IsDBNull(8) ? null : reader.GetDateTime(8).ToString();
                         tbl.Rec = reader.GetInt32(9);
                                                 
                         tbl.N03s = Program.n03s.FindAll(item => Equals(item.Nb, tbl.Tcentral));

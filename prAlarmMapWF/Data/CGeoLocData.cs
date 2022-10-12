@@ -8,6 +8,8 @@ namespace prAlarmMapWF.Data
 {
     public class CGeoLocData
     {
+        public string NCentral { get; set; }    
+        public string Time { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public string AddrC { get; set; }

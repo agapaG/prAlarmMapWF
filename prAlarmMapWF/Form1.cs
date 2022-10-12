@@ -121,7 +121,7 @@ namespace prAlarmMapWF
 
             //Максимальное/Минимальное приближения
             AlarmMap.MaxZoom = 18;
-            AlarmMap.MinZoom = 10; //12 -> 7
+            AlarmMap.MinZoom = 12; //12 -> 7
 
             //Курсор мыши в центр карты
             AlarmMap.MouseWheelZoomType = MouseWheelZoomType.MousePositionWithoutCenter;

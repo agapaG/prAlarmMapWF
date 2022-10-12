@@ -82,8 +82,12 @@ namespace prAlarmMapWF
             #region левая сторона
             double latLeft = cPoint.Y + AlarmMap.ViewArea.Size.HeightLat / 2.0 - deltHeight1per15;
             double lngLeft = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0 + deltWidth1per20;
-
             #endregion
+            #region правая сторона
+            double latRight = cPoint.Y + AlarmMap.ViewArea.Size.HeightLat / 2.0 - deltHeight1per15;
+            double lngRight = cPoint.X + AlarmMap.ViewArea.Size.WidthLng / 2.0 - deltWidth1per20;
+            #endregion
+
 
             for (int i = 0; i < workGeoLocs.Count; i++)
             {                
@@ -125,22 +129,26 @@ namespace prAlarmMapWF
                             if ((90.0 - Alpha) < 45.0 )
                             {
                                 Bitmap bmp8 = _createRightMarker(workGeoLocs[i].AddrC);
-                                double deltHeight = AlarmMap.ViewArea.Size.HeightLat - deltHeight1per10;
-                                double deltWidth = AlarmMap.ViewArea.Size.WidthLng - deltWidth1per10;
 
-                                GMapMarker marker = new GMarkerGoogle(
-                                    new PointLatLng(workGeoLocs[i].Latitude, workGeoLocs[i].Longitude), GMarkerGoogleType.red_small);
-                                marker.ToolTip = new GMapRoundedToolTip(marker);
-                                //Brush ToolTipBackColor = new SolidBrush(Color.Transparent);
-                                //marker.ToolTip.Fill = ToolTipBackColor;
-                                marker.ToolTip.Fill = Brushes.LightGray;
-                                marker.ToolTip.Foreground = Brushes.Black;
-                                marker.ToolTip.Stroke = Pens.Black;
-                                marker.ToolTip.TextPadding = new Size(5, 5);
-                                marker.ToolTipMode = MarkerTooltipMode.Always;
-                                marker.ToolTipText = workGeoLocs[i].AddrC + "ОНО";
+                                GMapMarker marker1 = new GMarkerGoogle(
+                                    new PointLatLng(cPoint.Y, cPoint.X), bmp8);
 
-                                AlarmmarkersOverlay.Markers.Add(marker);
+                                latRight -= deltHeight1per15;
+                                marker1.Position = new PointLatLng(latRight, lngRight);
+
+                                AlarmmarkersOverlayp13.Markers.Add(marker1);
+                            }
+                            if ((90.0 - Alpha) > 55.0)
+                            {
+                                Bitmap bmp8 = _createRightUpMarker(workGeoLocs[i].AddrC);
+
+                                GMapMarker marker1 = new GMarkerGoogle(
+                                    new PointLatLng(cPoint.Y, cPoint.X), bmp8);
+
+                                latRight -= deltHeight1per15;
+                                marker1.Position = new PointLatLng(latRight, lngRight);
+
+                                AlarmmarkersOverlayp13.Markers.Add(marker1);
                             }
                         }
                         if (pLat < 0 && pLong < 0)
@@ -358,13 +366,25 @@ namespace prAlarmMapWF
 
                     for (int i = 0; i < dataPackagesCurrent.Count; i++)
                     {
+                        string strtmp = _addrParse(dataPackagesCurrent[i].N03s[0].Adr);
+                                                
                         CGeoLocData cGeoLocData = new CGeoLocData();
-                        cGeoLocData = cGeoLocDatas.Find(item => item.AddrC.Equals(dataPackagesCurrent[i].N03s[0].Adr));
+
+                        cGeoLocData = cGeoLocDatas.Find(item => item.AddrC.Equals(strtmp));
                         if (cGeoLocData != null)
                         {
-                            //CGeoLocData tmp = new CGeoLocData();
+                            CGeoLocData work = new CGeoLocData();
                             //tmp = cGeoLocDatas.Find
-                            workGeoLocs.Add(cGeoLocData);
+                            string tmp = dataPackagesCurrent[i].Tcentral + "  "; 
+                            tmp += dataPackagesCurrent[i].Time + "  ";
+                            tmp += cGeoLocData.AddrC;
+                            work.AddrC = tmp;
+                            work.Latitude = cGeoLocData.Latitude;
+                            work.Longitude = cGeoLocData.Longitude;
+                            work.AddrM = cGeoLocData.AddrM;
+                            work.NCentral = dataPackagesCurrent[i].Tcentral;
+                            work.Time = dataPackagesCurrent[i].Time;
+                            workGeoLocs.Add(work);
                         }
                         else
                         {
@@ -390,24 +410,24 @@ namespace prAlarmMapWF
                     //точка для анализа
                     //lat 49,899942109186
                     //long 35,809936523
-                    CGeoLocData cGD = new CGeoLocData();
-                    cGD.AddrC = "Test 3ч. < 35";
-                    cGD.AddrM = "...";
-                    cGD.Latitude = 49.899942109186;
-                    cGD.Longitude = 35.809936523;
-                    workGeoLocs.Add(cGD);
-                    CGeoLocData cGD1 = new CGeoLocData();
-                    cGD1.AddrC = "Test 3ч. > 55";
-                    cGD1.AddrM = "...";
-                    cGD1.Latitude = 49.8202650941554;
-                    cGD1.Longitude = 36.1203002929688;
-                    workGeoLocs.Add(cGD1);
-                    CGeoLocData cGD2 = new CGeoLocData();
-                    cGD2.AddrC = "Test 3ч. ~ 45";
-                    cGD2.AddrM = "...";
-                    cGD2.Latitude = 49.7182643097303;
-                    cGD2.Longitude = 35.672607421875;
-                    workGeoLocs.Add(cGD2);
+                    //CGeoLocData cGD = new CGeoLocData();
+                    //cGD.AddrC = "Test 1ч. < 35";
+                    //cGD.AddrM = "...";
+                    //cGD.Latitude = 50.0183289559089;
+                    //cGD.Longitude = 36.6517639160156;
+                    //workGeoLocs.Add(cGD);
+                    //CGeoLocData cGD1 = new CGeoLocData();
+                    //cGD1.AddrC = "Test 1ч. > 55";
+                    //cGD1.AddrM = "...";
+                    //cGD1.Latitude = 50.1377451310729;
+                    //cGD1.Longitude = 36.6181182861328;
+                    //workGeoLocs.Add(cGD1);
+                    //CGeoLocData cGD2 = new CGeoLocData();
+                    //cGD2.AddrC = "Test 1ч. ~ 45";
+                    //cGD2.AddrM = "...";
+                    //cGD2.Latitude = 50.3112694650712;
+                    //cGD2.Longitude = 36.4540100097656;
+                    //workGeoLocs.Add(cGD2);
 
                     //***********************************************
                     mapBgWorker.ReportProgress(100);
@@ -498,82 +518,6 @@ namespace prAlarmMapWF
             //bmp8.Save("1.gif");
 
             return bmp8;
-
-        }
-
-        private Bitmap _createRightMarker(string streetname)
-        {
-            Bitmap bmp8 = null;
-            //***********************************
-            var bmp32 = new Bitmap(300, 40, PixelFormat.Format32bppArgb);
-
-            using (Graphics g = Graphics.FromImage(bmp32))
-            {
-                RectangleF rectangleF = new RectangleF(33.0F, 17.0f, bmp32.Width, bmp32.Height);
-                g.Clear(Color.LightGray);
-                PointF pt1 = new PointF(0.0f, 20.0f);
-                PointF pt2 = new PointF(30.0f, 20.0f);
-                PointF pt3 = new PointF(30.0f, 20.0f);
-                PointF pt4 = new PointF(20.0f, 10.0f);
-                PointF pt5 = new PointF(30.0f, 20.0f);
-                PointF pt6 = new PointF(20.0f, 30.0f);
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-
-                g.DrawLine(Pens.Black, pt1, pt2);
-                g.DrawLine(Pens.Black, pt3, pt4);
-                g.DrawLine(Pens.Black, pt5, pt6);
-
-                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-                StringFormat sf = new StringFormat()
-                {
-                    //Alignment = StringAlignment.Near,
-                    LineAlignment = StringAlignment.Center,
-                };
-                g.DrawString(streetname, new Font("arial", 10), Brushes.Black, rectangleF, sf);
-                g.Flush();
-            }
-            // создаем битмап с палитрой
-            bmp8 = new Bitmap(300, 40, PixelFormat.Format8bppIndexed);
-            var palette = bmp8.Palette;
-            for (int j = 0; j < 256; j++)
-            {
-                // заполняем палитру, для простоты это будут все оттенки серого
-                palette.Entries[j] = Color.FromArgb(j, j, j);
-            }
-            // это не просто так, обязательно нужна эта строка
-            bmp8.Palette = palette;
-
-            var data = bmp8.LockBits(new Rectangle(0, 0, 300, 40), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
-            var bytes = new byte[data.Height * data.Stride];
-            Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
-            for (int x = 0; x < 300; x++)
-                for (int y = 0; y < 40; y++)
-                {
-                    // берем пиксель с основного 32битного битмапа
-                    var color = bmp32.GetPixel(x, y);
-                    // ищем цвет в палитре 8битного битмапа
-                    int index = -1;
-                    for (int ii = 0; ii < palette.Entries.Length; ii++)
-                        if (palette.Entries[ii] == color)
-                        {
-                            index = ii;
-                            break;
-                        }
-                    if (index == -1)
-                        throw new InvalidOperationException("Cannot find color in palette");
-                    // записываем индекс цвета в палитре напрямую в изображение
-                    bytes[y * data.Stride + x] = (byte)index;
-                }
-
-            Marshal.Copy(bytes, 0, data.Scan0, bytes.Length);
-            bmp8.UnlockBits(data);
-
-            //bmp8.Save("1.gif");
-
-            return bmp8;
-            //return bmp32;
 
         }
 
@@ -727,6 +671,174 @@ namespace prAlarmMapWF
             return bmp8;
             //return bmp32;
 
+        }
+
+        private Bitmap _createRightMarker(string streetname)
+        {
+            Bitmap bmp8 = null;
+            //***********************************
+            var bmp32 = new Bitmap(300, 40, PixelFormat.Format32bppArgb);
+
+            using (Graphics g = Graphics.FromImage(bmp32))
+            {
+                RectangleF rectangleF = new RectangleF(33.0F, 17.0f, bmp32.Width, bmp32.Height);
+                g.Clear(Color.LightGray);
+                PointF pt1 = new PointF(0.0f, 20.0f);
+                PointF pt2 = new PointF(30.0f, 20.0f);
+                PointF pt3 = new PointF(30.0f, 20.0f);
+                PointF pt4 = new PointF(20.0f, 10.0f);
+                PointF pt5 = new PointF(30.0f, 20.0f);
+                PointF pt6 = new PointF(20.0f, 30.0f);
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+
+                g.DrawLine(Pens.Black, pt1, pt2);
+                g.DrawLine(Pens.Black, pt3, pt4);
+                g.DrawLine(Pens.Black, pt5, pt6);
+
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+                StringFormat sf = new StringFormat()
+                {
+                    //Alignment = StringAlignment.Near,
+                    //LineAlignment = StringAlignment.Center,
+                };
+                g.DrawString(streetname, new Font("arial", 10), Brushes.Black, rectangleF, sf);
+                g.Flush();
+            }
+            // создаем битмап с палитрой
+            bmp8 = new Bitmap(300, 40, PixelFormat.Format8bppIndexed);
+            var palette = bmp8.Palette;
+            for (int j = 0; j < 256; j++)
+            {
+                // заполняем палитру, для простоты это будут все оттенки серого
+                palette.Entries[j] = Color.FromArgb(j, j, j);
+            }
+            // это не просто так, обязательно нужна эта строка
+            bmp8.Palette = palette;
+
+            var data = bmp8.LockBits(new Rectangle(0, 0, 300, 40), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
+            var bytes = new byte[data.Height * data.Stride];
+            Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
+            for (int x = 0; x < 300; x++)
+                for (int y = 0; y < 40; y++)
+                {
+                    // берем пиксель с основного 32битного битмапа
+                    var color = bmp32.GetPixel(x, y);
+                    // ищем цвет в палитре 8битного битмапа
+                    int index = -1;
+                    for (int ii = 0; ii < palette.Entries.Length; ii++)
+                        if (palette.Entries[ii] == color)
+                        {
+                            index = ii;
+                            break;
+                        }
+                    if (index == -1)
+                        throw new InvalidOperationException("Cannot find color in palette");
+                    // записываем индекс цвета в палитре напрямую в изображение
+                    bytes[y * data.Stride + x] = (byte)index;
+                }
+
+            Marshal.Copy(bytes, 0, data.Scan0, bytes.Length);
+            bmp8.UnlockBits(data);
+
+            //bmp8.Save("1.gif");
+
+            return bmp8;
+            //return bmp32;
+
+        }
+
+        private Bitmap _createRightUpMarker(string streetname)
+        {
+            Bitmap bmp8 = null;
+            //***********************************
+            var bmp32 = new Bitmap(300, 40, PixelFormat.Format32bppArgb);
+
+            using (Graphics g = Graphics.FromImage(bmp32))
+            {
+                RectangleF rectangleF = new RectangleF(33.0F, 17.0f, bmp32.Width, bmp32.Height);
+                g.Clear(Color.LightGray);
+                PointF pt1 = new PointF(20.0f, 0.0f);
+                PointF pt2 = new PointF(20.0f, 30.0f);
+                PointF pt3 = new PointF(20.0f, 0.0f);
+                PointF pt4 = new PointF(10.0f, 20.0f);
+                PointF pt5 = new PointF(20.0f, 0.0f);
+                PointF pt6 = new PointF(30.0f, 20.0f);
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+
+                g.DrawLine(Pens.Black, pt1, pt2);
+                g.DrawLine(Pens.Black, pt3, pt4);
+                g.DrawLine(Pens.Black, pt5, pt6);
+
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+                StringFormat sf = new StringFormat()
+                {
+                    //Alignment = StringAlignment.Near,
+                    //LineAlignment = StringAlignment.Center,
+                };
+                g.DrawString(streetname, new Font("arial", 10), Brushes.Black, rectangleF, sf);
+                g.Flush();
+            }
+            // создаем битмап с палитрой
+            bmp8 = new Bitmap(300, 40, PixelFormat.Format8bppIndexed);
+            var palette = bmp8.Palette;
+            for (int j = 0; j < 256; j++)
+            {
+                // заполняем палитру, для простоты это будут все оттенки серого
+                palette.Entries[j] = Color.FromArgb(j, j, j);
+            }
+            // это не просто так, обязательно нужна эта строка
+            bmp8.Palette = palette;
+
+            var data = bmp8.LockBits(new Rectangle(0, 0, 300, 40), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
+            var bytes = new byte[data.Height * data.Stride];
+            Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
+            for (int x = 0; x < 300; x++)
+                for (int y = 0; y < 40; y++)
+                {
+                    // берем пиксель с основного 32битного битмапа
+                    var color = bmp32.GetPixel(x, y);
+                    // ищем цвет в палитре 8битного битмапа
+                    int index = -1;
+                    for (int ii = 0; ii < palette.Entries.Length; ii++)
+                        if (palette.Entries[ii] == color)
+                        {
+                            index = ii;
+                            break;
+                        }
+                    if (index == -1)
+                        throw new InvalidOperationException("Cannot find color in palette");
+                    // записываем индекс цвета в палитре напрямую в изображение
+                    bytes[y * data.Stride + x] = (byte)index;
+                }
+
+            Marshal.Copy(bytes, 0, data.Scan0, bytes.Length);
+            bmp8.UnlockBits(data);
+
+            //bmp8.Save("1.gif");
+
+            return bmp8;
+            //return bmp32;
+
+        }
+
+
+        private string _addrParse(string str)
+        {
+            string rez;
+            int index = str.IndexOf(';');
+            if (index > 0)
+                str = str.Remove(index);
+            int index1 = str.IndexOf('(');
+            if (index1 > 0)
+                str = str.Remove(index1);
+
+            rez = str.Trim();
+
+            return rez;
         }
 
     }
