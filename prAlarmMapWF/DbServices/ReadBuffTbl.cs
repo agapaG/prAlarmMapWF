@@ -29,7 +29,7 @@ namespace prAlarmMapWF.DbServices
                 {
                     mySql.Open();
                     cmd = mySql.CreateCommand();
-                    cmd.   Prepare();
+                    cmd.Prepare();
                     cmd.CommandText = $"select * from {TblName} where Rec > {Rec}";
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())

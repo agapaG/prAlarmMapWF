@@ -6,20 +6,19 @@ using System.Threading.Tasks;
 
 using System.Configuration;
 using System.Data.SqlClient;
-using System.Data.SqlTypes;
 
 using prAlarmMapWF.Data;
 using NLog;
 
 namespace prAlarmMapWF.DbServices
 {
-    internal class Readn03Tbl
+    internal class Readn04Tbl
     {
         static Logger dbLog = NLog.LogManager.GetLogger("dbLog");
 
-        public static List<n03> _getn03()
+        public static List<n04> _getn04()
         {
-            List<n03> rez = new List<n03>();
+            List<n04> rez = new List<n04>();
 
             string cnn = ConfigurationManager.ConnectionStrings["cnnStrno"].ConnectionString;
 
@@ -32,16 +31,15 @@ namespace prAlarmMapWF.DbServices
                     mySql.Open();
                     cmd = mySql.CreateCommand();
                     cmd.Prepare();
-                    cmd.CommandText = $"select * from n03";
+                    cmd.CommandText = $"select * from n04";
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
-                        n03 tbln03 = new n03();
-                        tbln03.Id = reader.GetInt32(0);
-                        tbln03.Adr = reader.IsDBNull(2) ? null : reader.GetString(2);
-                        tbln03.Nb = reader.IsDBNull(13) ? null : reader.GetString(13);
-                        
-                        rez.Add(tbln03);
+                        n04 tbln04 = new n04();
+                        tbln04.Id = reader.GetInt32(0);
+                        tbln04.Status = reader.IsDBNull(7) ? null : reader.GetString(7);
+
+                        rez.Add(tbln04);
                     }
                 }
                 catch (SqlException ex)

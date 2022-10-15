@@ -336,11 +336,10 @@ namespace prAlarmMapWF
 
             while (!Program.EndWork)
             {
-                Thread.Sleep(10);
-                
+                Thread.Sleep(65);
+
                 eventWait.WaitOne();
 
-                Thread.Sleep(15);
                 try
                 {
                     //int count = ReadBuff_WTbl._get_rowscount();
@@ -373,6 +372,15 @@ namespace prAlarmMapWF
                         cGeoLocData = cGeoLocDatas.Find(item => item.AddrC.Equals(strtmp));
                         if (cGeoLocData != null)
                         {
+                            var var1 = Program.n04s.Find(item => item.Id == dataPackagesCurrent[i].N03s[0].Id);
+                            if (var1 != null)
+                            {
+                                if (var1.Status.Trim().Equals("Расторгнут"))
+                                    continue;
+                            }
+                            else
+                                continue;
+
                             CGeoLocData work = new CGeoLocData();
                             //tmp = cGeoLocDatas.Find
                             string tmp = dataPackagesCurrent[i].Tcentral + "  "; 
