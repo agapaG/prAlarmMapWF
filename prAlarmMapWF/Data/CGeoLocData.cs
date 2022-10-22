@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace prAlarmMapWF.Data
 {
-    public class CGeoLocData
+    public class CGeoLocData : IEquatable<CGeoLocData>
     {
         public string NCentral { get; set; }    
         public string Time { get; set; }
@@ -14,5 +14,19 @@ namespace prAlarmMapWF.Data
         public double Longitude { get; set; }
         public string AddrC { get; set; }
         public string AddrM { get; set; }
+
+        #region IEquatable method
+        public bool Equals(CGeoLocData other)
+        {
+            if (this.AddrC == other.AddrC)
+                return true;
+            return false;
+        }
+        #endregion
+        public override int GetHashCode()
+        {
+            return AddrC.GetHashCode();
+        }
+
     }
 }

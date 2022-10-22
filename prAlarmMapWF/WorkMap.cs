@@ -24,15 +24,27 @@ namespace prAlarmMapWF
 {
     internal class CPoint
     {
-        public double X { get; set; }   
-        public double Y { get; set; } 
-        public CPoint(){ }
+        public double X { get; set; }
+        public double Y { get; set; }
+        public CPoint() { }
         public CPoint(double y, double x)
         {
             X = x;
             Y = y;
         }
     }
+
+    public static class ExtenClass
+    {
+        public static List<TSource> DistinctBy<TSource, TKey>(
+                        this List<TSource> source,
+                        Func<TSource, TKey> keySelector)
+        {
+            var knownKeys = new HashSet<TKey>();
+            return source.Where(element => knownKeys.Add(keySelector(element))).ToList();
+        }
+    }
+
     public partial class Map : Form
     {
         EventWaitHandle eventWait;
@@ -43,6 +55,9 @@ namespace prAlarmMapWF
 
         double Height1per100;
         double WWidth1per100;
+
+        double AlarmMapViewAreaSizeHeightLat;
+        double AlarmMapViewAreaSizeWidthLng;
 
         GMapOverlay AlarmmarkersOverlay = new GMapOverlay("Alarms");
         GMapOverlay AlarmmarkersOverlayp13 = new GMapOverlay("Alarmsp13");
@@ -56,6 +71,8 @@ namespace prAlarmMapWF
         List<CGeoLocData> workGeoLocs = new List<CGeoLocData>();
         bool onetime = true;
 
+        List<string> geoLocNames = new List<string>();
+
         private void MapBgWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Error != null)
@@ -68,34 +85,39 @@ namespace prAlarmMapWF
         {
             //Очищаем список маркеров.
             AlarmmarkersOverlay.Markers.Clear();
-            AlarmmarkersOverlayp13.Markers.Clear(); 
+            AlarmmarkersOverlayp13.Markers.Clear();
 
-            double deltHeight1per10 = AlarmMap.ViewArea.Size.HeightLat/10.0;
-            double deltHeight1per5 = AlarmMap.ViewArea.Size.HeightLat/5.0;
-            double deltHeight1per15 = AlarmMap.ViewArea.Size.HeightLat/15.0;
-            double deltHeight1per20 = AlarmMap.ViewArea.Size.HeightLat/20.0;
-            double deltHeight1per25 = AlarmMap.ViewArea.Size.HeightLat/25.0;
-            double deltWidth1per10 = AlarmMap.ViewArea.Size.WidthLng/10.0;
-            double deltWidth1per15 = AlarmMap.ViewArea.Size.WidthLng/15.0;
-            double deltWidth1per20 = AlarmMap.ViewArea.Size.WidthLng/9.0;
+            //workGeoLocs = workGeoLocs.Distinct().ToList();
+            List<CGeoLocData> Current = workGeoLocs.DistinctBy(x => x.AddrC);
+
+            //cLog.Info($"MapBgWorker_ProgressChanged HeightLat: {AlarmMap.ViewArea.HeightLat}  WidthLng: {AlarmMap.ViewArea.WidthLng}");
+
+            double deltHeight1per10 = AlarmMapViewAreaSizeHeightLat/10.0;
+            double deltHeight1per5 = AlarmMapViewAreaSizeHeightLat/5.0;
+            double deltHeight1per15 = AlarmMapViewAreaSizeHeightLat/15.0;
+            double deltHeight1per20 = AlarmMapViewAreaSizeHeightLat/20.0;
+            double deltHeight1per25 = AlarmMapViewAreaSizeHeightLat/25.0;
+            double deltWidth1per10 = AlarmMapViewAreaSizeWidthLng/10.0;
+            double deltWidth1per15 = AlarmMapViewAreaSizeWidthLng/15.0;
+            double deltWidth1per20 = AlarmMapViewAreaSizeWidthLng/9.0;
 
             #region левая сторона
-            double latLeft = cPoint.Y + AlarmMap.ViewArea.Size.HeightLat / 2.0 - deltHeight1per15;
-            double lngLeft = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0 + deltWidth1per20;
+            double latLeft = cPoint.Y + AlarmMapViewAreaSizeHeightLat/2.0 - deltHeight1per15;
+            double lngLeft = cPoint.X - AlarmMapViewAreaSizeWidthLng/2.0 + deltWidth1per20;
             #endregion
             #region правая сторона
-            double latRight = cPoint.Y + AlarmMap.ViewArea.Size.HeightLat / 2.0 - deltHeight1per15;
-            double lngRight = cPoint.X + AlarmMap.ViewArea.Size.WidthLng / 2.0 - deltWidth1per20;
+            double latRight = cPoint.Y + AlarmMapViewAreaSizeHeightLat/2.0 - deltHeight1per15;
+            double lngRight = cPoint.X + AlarmMapViewAreaSizeWidthLng/2.0 - deltWidth1per20;
             #endregion
 
 
-            for (int i = 0; i < workGeoLocs.Count; i++)
+            for (int i = 0; i < Current.Count; i++)
             {                
-                double pLat = workGeoLocs[i].Latitude - cPoint.Y;
-                double pLong = workGeoLocs[i].Longitude - cPoint.X;
+                double pLat = Current[i].Latitude - cPoint.Y;
+                double pLong = Current[i].Longitude - cPoint.X;
                 double Mod = Math.Sqrt(pLat*pLat + pLong*pLong);
 
-                PointLatLng currenyPoint = new PointLatLng(workGeoLocs[i].Latitude, workGeoLocs[i].Longitude);
+                PointLatLng currenyPoint = new PointLatLng(Current[i].Latitude, Current[i].Longitude);
                 
                                 
                 for (int j = 0; j < Polygones.Count; j++)
@@ -103,7 +125,7 @@ namespace prAlarmMapWF
                     if (Polygones[j].IsInside(currenyPoint))
                     {
                         GMapMarker marker = new GMarkerGoogle(
-                        new PointLatLng(workGeoLocs[i].Latitude, workGeoLocs[i].Longitude), GMarkerGoogleType.red_small);
+                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
                         marker.ToolTip = new GMapRoundedToolTip(marker);
                         //Brush ToolTipBackColor = new SolidBrush(Color.Transparent);
                         //marker.ToolTip.Fill = ToolTipBackColor;
@@ -112,118 +134,118 @@ namespace prAlarmMapWF
                         marker.ToolTip.Stroke = Pens.Black;
                         marker.ToolTip.TextPadding = new Size(5, 5);
                         marker.ToolTipMode = MarkerTooltipMode.Always;
-                        marker.ToolTipText = workGeoLocs[i].AddrC;
+                        marker.ToolTipText = Current[i].AddrC;
                         //marker.Size = new Size(2, 2);
-                        
+
 
                         AlarmmarkersOverlay.Markers.Add(marker);
                     }
-                    else
-                    {
-                        
-                        if (pLat > 0 && pLong > 0)
-                        {
-                            double cnAlpha = pLong / Mod;
-                            double Alpha = Math.Acos(cnAlpha) * (180.0 / Math.PI);
+                    //else
+                    //{
 
-                            if ((90.0 - Alpha) < 45.0 )
-                            {
-                                Bitmap bmp8 = _createRightMarker(workGeoLocs[i].AddrC);
+                    //    if (pLat > 0 && pLong > 0)
+                    //    {
+                    //        double cnAlpha = pLong / Mod;
+                    //        double Alpha = Math.Acos(cnAlpha) * (180.0 / Math.PI);
 
-                                GMapMarker marker1 = new GMarkerGoogle(
-                                    new PointLatLng(cPoint.Y, cPoint.X), bmp8);
+                    //        if ((90.0 - Alpha) < 45.0)
+                    //        {
+                    //            Bitmap bmp8 = _createRightMarker(Current[i].AddrC);
 
-                                latRight -= deltHeight1per15;
-                                marker1.Position = new PointLatLng(latRight, lngRight);
+                    //            GMapMarker marker1 = new GMarkerGoogle(
+                    //                new PointLatLng(cPoint.Y, cPoint.X), bmp8);
 
-                                AlarmmarkersOverlayp13.Markers.Add(marker1);
-                            }
-                            if ((90.0 - Alpha) > 55.0)
-                            {
-                                Bitmap bmp8 = _createRightUpMarker(workGeoLocs[i].AddrC);
+                    //            latRight -= deltHeight1per15;
+                    //            marker1.Position = new PointLatLng(latRight, lngRight);
 
-                                GMapMarker marker1 = new GMarkerGoogle(
-                                    new PointLatLng(cPoint.Y, cPoint.X), bmp8);
+                    //            AlarmmarkersOverlayp13.Markers.Add(marker1);
+                    //        }
+                    //        if ((90.0 - Alpha) > 55.0)
+                    //        {
+                    //            Bitmap bmp8 = _createRightUpMarker(Current[i].AddrC);
 
-                                latRight -= deltHeight1per15;
-                                marker1.Position = new PointLatLng(latRight, lngRight);
+                    //            GMapMarker marker1 = new GMarkerGoogle(
+                    //                new PointLatLng(cPoint.Y, cPoint.X), bmp8);
 
-                                AlarmmarkersOverlayp13.Markers.Add(marker1);
-                            }
-                        }
-                        if (pLat < 0 && pLong < 0)
-                        {
-                            double cnAlpha = pLong/Mod;
-                            double Alpha = Math.Acos(cnAlpha)*(180.0/Math.PI);
+                    //            latRight -= deltHeight1per15;
+                    //            marker1.Position = new PointLatLng(latRight, lngRight);
 
-                            if ((180.0 - Alpha) < 35.0)
-                            {
-                                Bitmap bmp8 = _createLeftMarker(workGeoLocs[i].AddrC);
-                                
-                                GMapMarker marker1 = new GMarkerGoogle(
-                                    new PointLatLng(cPoint.Y, cPoint.X), bmp8);
+                    //            AlarmmarkersOverlayp13.Markers.Add(marker1);
+                    //        }
+                    //    }
+                    //    if (pLat < 0 && pLong < 0)
+                    //    {
+                    //        double cnAlpha = pLong / Mod;
+                    //        double Alpha = Math.Acos(cnAlpha) * (180.0 / Math.PI);
 
-                                marker1.Position = new PointLatLng(latLeft, lngLeft);
-                             
-                                AlarmmarkersOverlayp13.Markers.Add(marker1);
+                    //        if ((180.0 - Alpha) < 35.0)
+                    //        {
+                    //            Bitmap bmp8 = _createLeftMarker(Current[i].AddrC);
 
-                                //lngRight -= deltHeight1per25;
+                    //            GMapMarker marker1 = new GMarkerGoogle(
+                    //                new PointLatLng(cPoint.Y, cPoint.X), bmp8);
 
-                                //Bitmap bmp81 = _createLestDownMarker(workGeoLocs[i].AddrC);
-                                //GMapMarker marker11 = new GMarkerGoogle(
-                                //    new PointLatLng(cPoint.Y, cPoint.X), bmp81);
+                    //            marker1.Position = new PointLatLng(latLeft, lngLeft);
 
-                                //lngRight -= deltHeight1per15;
-                                ////lngRight = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0 + deltWidth1per20;
+                    //            AlarmmarkersOverlayp13.Markers.Add(marker1);
 
-                                //marker11.Position = new PointLatLng(latLeft, lngRight);
+                    //            //lngRight -= deltHeight1per25;
 
-                                //AlarmmarkersOverlayp13.Markers.Add(marker11);
-                                //Bitmap bmp81 = _createLeftMarker(workGeoLocs[i].AddrC + "1");
+                    //            //Bitmap bmp81 = _createLestDownMarker(workGeoLocs[i].AddrC);
+                    //            //GMapMarker marker11 = new GMarkerGoogle(
+                    //            //    new PointLatLng(cPoint.Y, cPoint.X), bmp81);
 
-                                //latLeft -= deltHeight1per15;
-                                //lngRight = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0
-                                //    + deltWidth1per20;
+                    //            //lngRight -= deltHeight1per15;
+                    //            ////lngRight = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0 + deltWidth1per20;
+
+                    //            //marker11.Position = new PointLatLng(latLeft, lngRight);
+
+                    //            //AlarmmarkersOverlayp13.Markers.Add(marker11);
+                    //            //Bitmap bmp81 = _createLeftMarker(workGeoLocs[i].AddrC + "1");
+
+                    //            //latLeft -= deltHeight1per15;
+                    //            //lngRight = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0
+                    //            //    + deltWidth1per20;
 
 
-                                //GMapMarker marker2 = new GMarkerGoogle(
-                                //    new PointLatLng(cPoint.Y, cPoint.X), bmp81);
+                    //            //GMapMarker marker2 = new GMarkerGoogle(
+                    //            //    new PointLatLng(cPoint.Y, cPoint.X), bmp81);
 
-                                //marker2.Position = new PointLatLng(latLeft, lngRight);
-                                //AlarmmarkersOverlayp13.Markers.Add(marker2);
+                    //            //marker2.Position = new PointLatLng(latLeft, lngRight);
+                    //            //AlarmmarkersOverlayp13.Markers.Add(marker2);
 
-                            }
-                            if ((180.0 - Alpha) > 55.0)
-                            {
-                                Bitmap bmp8 = _createLeftDownMarker(workGeoLocs[i].AddrC);
-                                GMapMarker marker1 = new GMarkerGoogle(
-                                    new PointLatLng(cPoint.Y, cPoint.X), bmp8);
+                    //        }
+                    //        if ((180.0 - Alpha) > 55.0)
+                    //        {
+                    //            Bitmap bmp8 = _createLeftDownMarker(Current[i].AddrC);
+                    //            GMapMarker marker1 = new GMarkerGoogle(
+                    //                new PointLatLng(cPoint.Y, cPoint.X), bmp8);
 
-                                latLeft -= deltHeight1per15;
-                                lngLeft = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0 + deltWidth1per20;
+                    //            latLeft -= deltHeight1per15;
+                    //            lngLeft = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0 + deltWidth1per20;
 
-                                marker1.Position = new PointLatLng(latLeft, lngLeft);
+                    //            marker1.Position = new PointLatLng(latLeft, lngLeft);
 
-                                AlarmmarkersOverlayp13.Markers.Add(marker1);
-                            }
+                    //            AlarmmarkersOverlayp13.Markers.Add(marker1);
+                    //        }
 
-                            if ((180.0 - Alpha) < 55.0 && (180.0 - Alpha) > 36.0)
-                            {
-                                Bitmap bmp8 = _createLeftDown45LMarker(workGeoLocs[i].AddrC);
-                                GMapMarker marker1 = new GMarkerGoogle(
-                                    new PointLatLng(cPoint.Y, cPoint.X), bmp8);
+                    //        if ((180.0 - Alpha) < 55.0 && (180.0 - Alpha) > 36.0)
+                    //        {
+                    //            Bitmap bmp8 = _createLeftDown45LMarker(Current[i].AddrC);
+                    //            GMapMarker marker1 = new GMarkerGoogle(
+                    //                new PointLatLng(cPoint.Y, cPoint.X), bmp8);
 
-                                latLeft -= deltHeight1per15;
-                                lngLeft = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0 + deltWidth1per20;
+                    //            latLeft -= deltHeight1per15;
+                    //            lngLeft = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0 + deltWidth1per20;
 
-                                marker1.Position = new PointLatLng(latLeft, lngLeft);
+                    //            marker1.Position = new PointLatLng(latLeft, lngLeft);
 
-                                AlarmmarkersOverlayp13.Markers.Add(marker1);
-                            }
-                        }
+                    //            AlarmmarkersOverlayp13.Markers.Add(marker1);
+                    //        }
+                    //    }
 
-                       
-                    }
+
+                    //}
                 }
                 /*
                 if (mod < (0.009 * 13.1))
@@ -325,6 +347,7 @@ namespace prAlarmMapWF
             if (workGeoLocs.Count != 0)
                 workGeoLocs.Clear();
             onetime = true;
+            
             eventWait.Set();
 
         }
@@ -336,7 +359,7 @@ namespace prAlarmMapWF
 
             while (!Program.EndWork)
             {
-                Thread.Sleep(65);
+                Thread.Sleep(900);
 
                 eventWait.WaitOne();
 
@@ -366,9 +389,10 @@ namespace prAlarmMapWF
                     for (int i = 0; i < dataPackagesCurrent.Count; i++)
                     {
                         string strtmp = _addrParse(dataPackagesCurrent[i].N03s[0].Adr);
-                                                
-                        CGeoLocData cGeoLocData = new CGeoLocData();
+                        //if (geoLocNames.Contains(dataPackagesCurrent[i].N03s[0].Adr))
+                        //    continue;
 
+                        CGeoLocData cGeoLocData = new CGeoLocData();
                         cGeoLocData = cGeoLocDatas.Find(item => item.AddrC.Equals(strtmp));
                         if (cGeoLocData != null)
                         {
@@ -393,6 +417,8 @@ namespace prAlarmMapWF
                             work.NCentral = dataPackagesCurrent[i].Tcentral;
                             work.Time = dataPackagesCurrent[i].Time;
                             workGeoLocs.Add(work);
+
+                            //geoLocNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
                         }
                         else
                         {
@@ -458,18 +484,18 @@ namespace prAlarmMapWF
         {
             Bitmap bmp8 = null;
             //***********************************
-            var bmp32 = new Bitmap(300, 40, PixelFormat.Format32bppArgb);
+            var bmp32 = new Bitmap(300, 50, PixelFormat.Format32bppArgb);
 
             using (Graphics g = Graphics.FromImage(bmp32))
             {
                 RectangleF rectangleF = new RectangleF(33.0F, 17.0f, bmp32.Width, bmp32.Height);
                 g.Clear(Color.LightGray);
-                PointF pt1 = new PointF(0.0f,20.0f);
+                PointF pt1 = new PointF(0.0f,25.0f);
                 PointF pt2 = new PointF(10.0f, 10.0f);
-                PointF pt3 = new PointF(0.0f, 20.0f);
-                PointF pt4 = new PointF(10.0f, 30.0f);
-                PointF pt5 = new PointF(0.0f, 20.0f);
-                PointF pt6 = new PointF(30.0f, 20.0f);
+                PointF pt3 = new PointF(0.0f, 25.0f);
+                PointF pt4 = new PointF(10.0f, 35.0f);
+                PointF pt5 = new PointF(0.0f, 25.0f);
+                PointF pt6 = new PointF(30.0f, 25.0f);
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
                 g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
@@ -488,7 +514,7 @@ namespace prAlarmMapWF
                 g.Flush();
             }
             // создаем битмап с палитрой
-            bmp8 = new Bitmap(300, 40, PixelFormat.Format8bppIndexed);
+            bmp8 = new Bitmap(300, 50, PixelFormat.Format8bppIndexed);
             var palette = bmp8.Palette;
             for (int j = 0; j < 256; j++)
             {
@@ -498,11 +524,11 @@ namespace prAlarmMapWF
             // это не просто так, обязательно нужна эта строка
             bmp8.Palette = palette;
 
-            var data = bmp8.LockBits(new Rectangle(0, 0,300, 40), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
+            var data = bmp8.LockBits(new Rectangle(0, 0,300, 50), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
             var bytes = new byte[data.Height * data.Stride];
             Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
             for (int x = 0; x < 300; x++)
-                for (int y = 0; y < 40; y++)
+                for (int y = 0; y < 50; y++)
                 {
                     // берем пиксель с основного 32битного битмапа
                     var color = bmp32.GetPixel(x, y);
@@ -533,18 +559,18 @@ namespace prAlarmMapWF
         {
             Bitmap bmp8 = null;
             //***********************************
-            var bmp32 = new Bitmap(300, 40, PixelFormat.Format32bppArgb);
+            var bmp32 = new Bitmap(300, 50, PixelFormat.Format32bppArgb);
 
             using (Graphics g = Graphics.FromImage(bmp32))
             {
                 RectangleF rectangleF = new RectangleF(33.0F, 17.0f, bmp32.Width, bmp32.Height);
                 g.Clear(Color.LightGray);
-                PointF pt1 = new PointF(20.0f, 40.0f);
-                PointF pt2 = new PointF(20.0f, 10.0f);
-                PointF pt3 = new PointF(20.0f, 40.0f);
-                PointF pt4 = new PointF(10.0f, 30.0f);
-                PointF pt5 = new PointF(20.0f, 40.0f);
-                PointF pt6 = new PointF(30.0f, 30.0f);
+                PointF pt1 = new PointF(20.0f, 50.0f);
+                PointF pt2 = new PointF(20.0f, 20.0f);
+                PointF pt3 = new PointF(20.0f, 50.0f);
+                PointF pt4 = new PointF(10.0f, 40.0f);
+                PointF pt5 = new PointF(20.0f, 50.0f);
+                PointF pt6 = new PointF(30.0f, 40.0f);
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
                 g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
@@ -563,7 +589,7 @@ namespace prAlarmMapWF
                 g.Flush();
             }
             // создаем битмап с палитрой
-            bmp8 = new Bitmap(300, 40, PixelFormat.Format8bppIndexed);
+            bmp8 = new Bitmap(300, 50, PixelFormat.Format8bppIndexed);
             var palette = bmp8.Palette;
             for (int j = 0; j < 256; j++)
             {
@@ -573,11 +599,11 @@ namespace prAlarmMapWF
             // это не просто так, обязательно нужна эта строка
             bmp8.Palette = palette;
 
-            var data = bmp8.LockBits(new Rectangle(0, 0, 300, 40), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
+            var data = bmp8.LockBits(new Rectangle(0, 0, 300, 50), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
             var bytes = new byte[data.Height * data.Stride];
             Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
             for (int x = 0; x < 300; x++)
-                for (int y = 0; y < 40; y++)
+                for (int y = 0; y < 50; y++)
                 {
                     // берем пиксель с основного 32битного битмапа
                     var color = bmp32.GetPixel(x, y);
@@ -609,17 +635,17 @@ namespace prAlarmMapWF
         {
             Bitmap bmp8 = null;
             //***********************************
-            var bmp32 = new Bitmap(300, 40, PixelFormat.Format32bppArgb);
+            var bmp32 = new Bitmap(300, 50, PixelFormat.Format32bppArgb);
 
             using (Graphics g = Graphics.FromImage(bmp32))
             {
                 RectangleF rectangleF = new RectangleF(33.0F, 17.0f, bmp32.Width, bmp32.Height);
                 g.Clear(Color.LightGray);
-                PointF pt1 = new PointF(0.0f, 40.0f);
-                PointF pt2 = new PointF(0.0f, 30.0f);
-                PointF pt3 = new PointF(0.0f, 40.0f);
+                PointF pt1 = new PointF(0.0f, 50.0f);
+                PointF pt2 = new PointF(0.0f, 40.0f);
+                PointF pt3 = new PointF(0.0f, 50.0f);
                 PointF pt4 = new PointF(0.0f, 10.0f);
-                PointF pt5 = new PointF(0.0f, 40.0f);
+                PointF pt5 = new PointF(0.0f, 50.0f);
                 PointF pt6 = new PointF(30.0f, 20.0f);
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
@@ -639,7 +665,7 @@ namespace prAlarmMapWF
                 g.Flush();
             }
             // создаем битмап с палитрой
-            bmp8 = new Bitmap(300, 40, PixelFormat.Format8bppIndexed);
+            bmp8 = new Bitmap(300, 50, PixelFormat.Format8bppIndexed);
             var palette = bmp8.Palette;
             for (int j = 0; j < 256; j++)
             {
@@ -649,11 +675,11 @@ namespace prAlarmMapWF
             // это не просто так, обязательно нужна эта строка
             bmp8.Palette = palette;
 
-            var data = bmp8.LockBits(new Rectangle(0, 0, 300, 40), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
+            var data = bmp8.LockBits(new Rectangle(0, 0, 300, 50), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
             var bytes = new byte[data.Height * data.Stride];
             Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
             for (int x = 0; x < 300; x++)
-                for (int y = 0; y < 40; y++)
+                for (int y = 0; y < 50; y++)
                 {
                     // берем пиксель с основного 32битного битмапа
                     var color = bmp32.GetPixel(x, y);
@@ -685,18 +711,18 @@ namespace prAlarmMapWF
         {
             Bitmap bmp8 = null;
             //***********************************
-            var bmp32 = new Bitmap(300, 40, PixelFormat.Format32bppArgb);
+            var bmp32 = new Bitmap(300, 50, PixelFormat.Format32bppArgb);
 
             using (Graphics g = Graphics.FromImage(bmp32))
             {
                 RectangleF rectangleF = new RectangleF(33.0F, 17.0f, bmp32.Width, bmp32.Height);
                 g.Clear(Color.LightGray);
-                PointF pt1 = new PointF(0.0f, 20.0f);
-                PointF pt2 = new PointF(30.0f, 20.0f);
-                PointF pt3 = new PointF(30.0f, 20.0f);
-                PointF pt4 = new PointF(20.0f, 10.0f);
-                PointF pt5 = new PointF(30.0f, 20.0f);
-                PointF pt6 = new PointF(20.0f, 30.0f);
+                PointF pt1 = new PointF(0.0f, 25.0f);
+                PointF pt2 = new PointF(30.0f, 25.0f);
+                PointF pt3 = new PointF(30.0f, 25.0f);
+                PointF pt4 = new PointF(20.0f, 15.0f);
+                PointF pt5 = new PointF(30.0f, 25.0f);
+                PointF pt6 = new PointF(20.0f, 35.0f);
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
                 g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
@@ -715,7 +741,7 @@ namespace prAlarmMapWF
                 g.Flush();
             }
             // создаем битмап с палитрой
-            bmp8 = new Bitmap(300, 40, PixelFormat.Format8bppIndexed);
+            bmp8 = new Bitmap(300, 50, PixelFormat.Format8bppIndexed);
             var palette = bmp8.Palette;
             for (int j = 0; j < 256; j++)
             {
@@ -725,11 +751,11 @@ namespace prAlarmMapWF
             // это не просто так, обязательно нужна эта строка
             bmp8.Palette = palette;
 
-            var data = bmp8.LockBits(new Rectangle(0, 0, 300, 40), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
+            var data = bmp8.LockBits(new Rectangle(0, 0, 300, 50), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
             var bytes = new byte[data.Height * data.Stride];
             Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
             for (int x = 0; x < 300; x++)
-                for (int y = 0; y < 40; y++)
+                for (int y = 0; y < 50; y++)
                 {
                     // берем пиксель с основного 32битного битмапа
                     var color = bmp32.GetPixel(x, y);
@@ -761,7 +787,7 @@ namespace prAlarmMapWF
         {
             Bitmap bmp8 = null;
             //***********************************
-            var bmp32 = new Bitmap(300, 40, PixelFormat.Format32bppArgb);
+            var bmp32 = new Bitmap(300, 50, PixelFormat.Format32bppArgb);
 
             using (Graphics g = Graphics.FromImage(bmp32))
             {
@@ -791,7 +817,7 @@ namespace prAlarmMapWF
                 g.Flush();
             }
             // создаем битмап с палитрой
-            bmp8 = new Bitmap(300, 40, PixelFormat.Format8bppIndexed);
+            bmp8 = new Bitmap(300, 50, PixelFormat.Format8bppIndexed);
             var palette = bmp8.Palette;
             for (int j = 0; j < 256; j++)
             {
@@ -801,11 +827,11 @@ namespace prAlarmMapWF
             // это не просто так, обязательно нужна эта строка
             bmp8.Palette = palette;
 
-            var data = bmp8.LockBits(new Rectangle(0, 0, 300, 40), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
+            var data = bmp8.LockBits(new Rectangle(0, 0, 300, 50), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
             var bytes = new byte[data.Height * data.Stride];
             Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
             for (int x = 0; x < 300; x++)
-                for (int y = 0; y < 40; y++)
+                for (int y = 0; y < 50; y++)
                 {
                     // берем пиксель с основного 32битного битмапа
                     var color = bmp32.GetPixel(x, y);
@@ -848,6 +874,5 @@ namespace prAlarmMapWF
 
             return rez;
         }
-
     }
 }

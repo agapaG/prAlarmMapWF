@@ -21,6 +21,8 @@ using prAlarmMapWF.DbServices;
 using prAlarmMapWF.Config;
 using prAlarmMapWF.Data;
 
+using NLog;
+
 namespace prAlarmMapWF
 {
     public partial class Map : Form
@@ -28,8 +30,10 @@ namespace prAlarmMapWF
 
         List<CGeoLocData> cGeoLocDatas = new List<CGeoLocData>();
 
-        readonly BackgroundWorker mapBgWorker = null;
-        
+        BackgroundWorker mapBgWorker = null;
+
+        Logger cLog = NLog.LogManager.GetLogger("commonLog");
+
 
         public Map()
         {
@@ -100,6 +104,9 @@ namespace prAlarmMapWF
             Height1per100 = AlarmMap.ViewArea.HeightLat/100;
             WWidth1per100 = AlarmMap.ViewArea.WidthLng/100;
 
+            AlarmMapViewAreaSizeHeightLat = AlarmMap.ViewArea.Size.HeightLat;
+            AlarmMapViewAreaSizeWidthLng = AlarmMap.ViewArea.Size.WidthLng;
+            //cLog.Info($"Map_Load HeightLat: {AlarmMap.ViewArea.HeightLat}  WidthLng: {AlarmMap.ViewArea.WidthLng}");
 
             //MessageBox.Show($"WidthLng {AlarmMap.ViewArea.WidthLng}");
             //MessageBox.Show($"HeightLat {AlarmMap.ViewArea.HeightLat}");
@@ -126,7 +133,7 @@ namespace prAlarmMapWF
             AlarmMap.MinZoom = 12; //12 -> 7
 
             //Курсор мыши в центр карты
-            AlarmMap.MouseWheelZoomType = MouseWheelZoomType.MousePositionWithoutCenter;
+            AlarmMap.MouseWheelZoomType = MouseWheelZoomType.MousePositionAndCenter;
 
             //Отключение негативного режима
             AlarmMap.NegativeMode = false;
@@ -154,6 +161,8 @@ namespace prAlarmMapWF
 
             //При загрузке 13ти кратное увеличение
             AlarmMap.Zoom = 12.99;
+
+            AlarmMap.MouseWheel += AlarmMap_MouseWheel;
 
 
             /*
@@ -216,6 +225,15 @@ namespace prAlarmMapWF
 
             //textBox1.Text = AlarmMap.ViewArea.Top.ToString();
             //textBox2.Text = AlarmMap.ViewArea.Left.ToString();   
+
+        }
+
+        private void AlarmMap_MouseWheel(object sender, MouseEventArgs e)
+        {
+            AlarmMapViewAreaSizeHeightLat = AlarmMap.ViewArea.Size.HeightLat;
+            AlarmMapViewAreaSizeWidthLng = AlarmMap.ViewArea.Size.WidthLng;
+
+            //cLog.Info($"AlarmMap_MouseWheel HeightLat: {AlarmMap.ViewArea.HeightLat}  WidthLng: {AlarmMap.ViewArea.WidthLng}");
 
         }
 
