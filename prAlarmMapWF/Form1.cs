@@ -81,8 +81,9 @@ namespace prAlarmMapWF
         {
             //markLeft.BackColor = ToolTipBackColor;
 
+            #region MainRec
             //Левый верх
-            pointLatLngs.Add(new PointLatLng(AlarmMap.ViewArea.Top-0.012, AlarmMap.ViewArea.Left));
+            pointLatLngs.Add(new PointLatLng(AlarmMap.ViewArea.Top, AlarmMap.ViewArea.Left));
             //Левый низ
             pointLatLngs.Add(new PointLatLng(AlarmMap.ViewArea.Top-AlarmMap.ViewArea.Size.HeightLat,
                 AlarmMap.ViewArea.Left));
@@ -97,6 +98,13 @@ namespace prAlarmMapWF
             //mapPolygon.Fill = ToolTipBackColor;
             //mapPolygon.Stroke = new Pen(Color.Transparent,0);
             mapPolygon.IsVisible = false;
+            #endregion
+
+            #region SecondRec
+            //Левый верх
+            pointLatLngsSecond.Add(AlarmMap.ViewArea.Top - 0.0070515349649)
+            #endregion
+
             AlarmmpolyOverlay.Polygons.Add(mapPolygon);
 
             Polygones = AlarmmpolyOverlay.Polygons;
@@ -114,7 +122,6 @@ namespace prAlarmMapWF
             mapBgWorker.RunWorkerAsync();
         }
 
-
         private void AlarmMap_Load(object sender, EventArgs e)
         {
             //Настройки для компонента GMap
@@ -130,10 +137,10 @@ namespace prAlarmMapWF
 
             //Максимальное/Минимальное приближения
             AlarmMap.MaxZoom = 18;
-            AlarmMap.MinZoom = 12; //12 -> 7
+            AlarmMap.MinZoom = 11; //12 -> 7
 
             //Курсор мыши в центр карты
-            AlarmMap.MouseWheelZoomType = MouseWheelZoomType.MousePositionAndCenter;
+            AlarmMap.MouseWheelZoomType = MouseWheelZoomType.ViewCenter;
 
             //Отключение негативного режима
             AlarmMap.NegativeMode = false;
@@ -161,8 +168,6 @@ namespace prAlarmMapWF
 
             //При загрузке 13ти кратное увеличение
             AlarmMap.Zoom = 12.99;
-
-            AlarmMap.MouseWheel += AlarmMap_MouseWheel;
 
 
             /*
@@ -227,16 +232,7 @@ namespace prAlarmMapWF
             //textBox2.Text = AlarmMap.ViewArea.Left.ToString();   
 
         }
-
-        private void AlarmMap_MouseWheel(object sender, MouseEventArgs e)
-        {
-            AlarmMapViewAreaSizeHeightLat = AlarmMap.ViewArea.Size.HeightLat;
-            AlarmMapViewAreaSizeWidthLng = AlarmMap.ViewArea.Size.WidthLng;
-
-            //cLog.Info($"AlarmMap_MouseWheel HeightLat: {AlarmMap.ViewArea.HeightLat}  WidthLng: {AlarmMap.ViewArea.WidthLng}");
-
-        }
-
+        
         private void Map_FormClosing(object sender, FormClosingEventArgs e)
         {
             Program.EndWork = true;
