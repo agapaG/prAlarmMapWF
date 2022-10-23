@@ -98,14 +98,214 @@ namespace prAlarmMapWF
             //mapPolygon.Fill = ToolTipBackColor;
             //mapPolygon.Stroke = new Pen(Color.Transparent,0);
             mapPolygon.IsVisible = false;
+
+            AlarmmpolyOverlay.Polygons.Add(mapPolygon);
             #endregion
 
             #region SecondRec
             //Левый верх
-            pointLatLngsSecond.Add(AlarmMap.ViewArea.Top - 0.0070515349649)
+            pointLatLngsSecond.Add(new PointLatLng( AlarmMap.ViewArea.Top - 0.0070515349649, 
+                AlarmMap.ViewArea.Left + AlarmMap.ViewArea.Size.WidthLng/2));
+            //Левый низ
+            pointLatLngsSecond.Add(new PointLatLng(AlarmMap.ViewArea.Top - AlarmMap.ViewArea.Size.HeightLat / 2,
+                AlarmMap.ViewArea.Left + AlarmMap.ViewArea.Size.WidthLng / 2));
+            //Правый низ
+            pointLatLngsSecond.Add(new PointLatLng(AlarmMap.ViewArea.Top - AlarmMap.ViewArea.Size.HeightLat / 2,
+                AlarmMap.ViewArea.Right - 0.0281524658203));
+            //Правый верх
+            pointLatLngsSecond.Add(new PointLatLng(AlarmMap.ViewArea.Top - 0.0070515349649,
+                AlarmMap.ViewArea.Right - 0.0281524658203));
+
+            GMapPolygon mapPolygonSec = new GMapPolygon(pointLatLngsSecond, "polySecond");
+            //Brush ToolTipBackColor = new SolidBrush(Color.Transparent);
+            //mapPolygon.Fill = ToolTipBackColor;
+            //mapPolygon.Stroke = new Pen(Color.Transparent,0);
+            mapPolygonSec.IsVisible = false;
+
+            AlarmmpolyOverlay.Polygons.Add(mapPolygonSec);
             #endregion
 
-            AlarmmpolyOverlay.Polygons.Add(mapPolygon);
+            #region ThirdRec
+            //Левый верх
+            pointLatLngsThird.Add(new PointLatLng(AlarmMap.ViewArea.Top - 0.0070515349649,
+                AlarmMap.ViewArea.Left + 0.0281524658203));
+            //Левый низ
+            pointLatLngsThird.Add(new PointLatLng(AlarmMap.ViewArea.Top - AlarmMap.ViewArea.Size.HeightLat / 2,
+                AlarmMap.ViewArea.Left + 0.0281524658203));
+            //Правый низ
+            pointLatLngsThird.Add(new PointLatLng(AlarmMap.ViewArea.Top - AlarmMap.ViewArea.Size.HeightLat / 2,
+                AlarmMap.ViewArea.Left + AlarmMap.ViewArea.Size.WidthLng / 2));
+            //Правый верх
+            pointLatLngsThird.Add(new PointLatLng(AlarmMap.ViewArea.Top - 0.0070515349649,
+                AlarmMap.ViewArea.Left + AlarmMap.ViewArea.Size.WidthLng / 2));
+
+            GMapPolygon mapPolygonThd = new GMapPolygon(pointLatLngsThird, "polyThird");
+            mapPolygonThd.IsVisible = false;
+
+            AlarmmpolyOverlay.Polygons.Add(mapPolygonThd);
+            #endregion
+
+            #region FourthRec
+            //Левый верх
+            pointLatLngsFourth.Add(new PointLatLng(AlarmMap.ViewArea.Top - AlarmMap.ViewArea.Size.HeightLat / 2,
+                AlarmMap.ViewArea.Left + 0.0281524658203));
+            //Левый низ
+            pointLatLngsFourth.Add(new PointLatLng(AlarmMap.ViewArea.Bottom + 0.0070515349649,
+                AlarmMap.ViewArea.Left + 0.0281524658203));
+            //Правый низ
+            pointLatLngsFourth.Add(new PointLatLng(AlarmMap.ViewArea.Bottom + 0.0070515349649,
+                AlarmMap.ViewArea.Left + AlarmMap.ViewArea.Size.WidthLng / 2));
+            //Правый верх
+            pointLatLngsFourth.Add(new PointLatLng(AlarmMap.ViewArea.Top - AlarmMap.ViewArea.Size.HeightLat / 2,
+                AlarmMap.ViewArea.Left + AlarmMap.ViewArea.Size.WidthLng / 2));
+
+            GMapPolygon mapPolygonFth = new GMapPolygon(pointLatLngsFourth, "polyFourth");
+            mapPolygonFth.IsVisible = false;
+
+            AlarmmpolyOverlay.Polygons.Add(mapPolygonFth);
+            #endregion
+
+            #region FifthRec
+            //Левый верх
+            pointLatLngsFifth.Add(new PointLatLng(AlarmMap.ViewArea.Top - AlarmMap.ViewArea.Size.HeightLat / 2,
+                AlarmMap.ViewArea.Left + AlarmMap.ViewArea.Size.WidthLng / 2));
+            //Левый низ
+            pointLatLngsFifth.Add(new PointLatLng(AlarmMap.ViewArea.Bottom + 0.0070515349649,
+                AlarmMap.ViewArea.Left + AlarmMap.ViewArea.Size.WidthLng / 2));
+            //Правый низ
+            pointLatLngsFifth.Add(new PointLatLng(AlarmMap.ViewArea.Bottom + 0.0070515349649,
+                AlarmMap.ViewArea.Right - 0.0281524658203));
+            //Правый верх
+            pointLatLngsFifth.Add(new PointLatLng(AlarmMap.ViewArea.Top - AlarmMap.ViewArea.Size.HeightLat / 2,
+                AlarmMap.ViewArea.Right - 0.0281524658203));
+
+            GMapPolygon mapPolygonFith = new GMapPolygon(pointLatLngsFifth, "polyFifth");
+            mapPolygonFith.IsVisible = false;
+
+            AlarmmpolyOverlay.Polygons.Add(mapPolygonFith);
+            #endregion
+
+            #region SixthRec
+            //Левый верх
+            pointLatLngsSixth.Add(new PointLatLng(AlarmMap.ViewArea.Top,
+                AlarmMap.ViewArea.Left + AlarmMap.ViewArea.Size.WidthLng / 2));
+            //Левый низ
+            pointLatLngsSixth.Add(new PointLatLng(AlarmMap.ViewArea.Top - 0.0070515349649,
+                AlarmMap.ViewArea.Left + AlarmMap.ViewArea.Size.WidthLng / 2));
+            //Правый низ
+            pointLatLngsSixth.Add(new PointLatLng(AlarmMap.ViewArea.Top - 0.0070515349649,
+                AlarmMap.ViewArea.Right - 0.0281524658203));
+            //Правый верх
+            pointLatLngsSixth.Add(new PointLatLng(AlarmMap.ViewArea.Top,
+                AlarmMap.ViewArea.Right - 0.0281524658203));
+                        
+
+            GMapPolygon mapPolygonSixth = new GMapPolygon(pointLatLngsSixth, "polySixth");
+            mapPolygonSixth.IsVisible = false;
+
+            AlarmmpolyOverlay.Polygons.Add(mapPolygonSixth);
+            #endregion
+
+            #region SeventhRec
+            //Левый верх
+            pointLatLngsSeventh.Add(new PointLatLng(AlarmMap.ViewArea.Top,
+                AlarmMap.ViewArea.Left + 0.0281524658203));
+            //Левый низ
+            pointLatLngsSeventh.Add(new PointLatLng(AlarmMap.ViewArea.Top - 0.0070515349649,
+                AlarmMap.ViewArea.Left + 0.0281524658203));
+            //Правый низ
+            pointLatLngsSeventh.Add(new PointLatLng(AlarmMap.ViewArea.Top - 0.0070515349649,
+                AlarmMap.ViewArea.Left + AlarmMap.ViewArea.Size.WidthLng / 2));
+            //Правый верх
+            pointLatLngsSeventh.Add(new PointLatLng(AlarmMap.ViewArea.Top,
+                AlarmMap.ViewArea.Left + AlarmMap.ViewArea.Size.WidthLng / 2));
+
+            GMapPolygon mapPolygonSev = new GMapPolygon(pointLatLngsSeventh, "polySeventh");
+            mapPolygonSev.IsVisible = false;
+
+            AlarmmpolyOverlay.Polygons.Add(mapPolygonSev);
+            #endregion
+
+            #region EighthRec
+            //Левый верх
+            pointLatLngsEighth.Add(new PointLatLng(AlarmMap.ViewArea.Top,
+                AlarmMap.ViewArea.Left));
+            //Левый низ
+            pointLatLngsEighth.Add(new PointLatLng(AlarmMap.ViewArea.Bottom,
+                AlarmMap.ViewArea.Left));
+            //Правый низ
+            pointLatLngsEighth.Add(new PointLatLng(AlarmMap.ViewArea.Bottom,
+                AlarmMap.ViewArea.Left + 0.0281524658203));
+            //Правый верх
+            pointLatLngsEighth.Add(new PointLatLng(AlarmMap.ViewArea.Top,
+                AlarmMap.ViewArea.Left + 0.0281524658203));
+
+            GMapPolygon mapPolygonEight = new GMapPolygon(pointLatLngsEighth, "polyEighth");
+            mapPolygonEight.IsVisible = false;
+
+            AlarmmpolyOverlay.Polygons.Add(mapPolygonEight);
+            #endregion
+
+            #region NinethRec
+            //Левый верх
+            pointLatLngsNineth.Add(new PointLatLng(AlarmMap.ViewArea.Bottom + 0.0070515349649,
+                AlarmMap.ViewArea.Left + 0.0281524658203));
+            //Левый низ
+            pointLatLngsNineth.Add(new PointLatLng(AlarmMap.ViewArea.Bottom,
+                AlarmMap.ViewArea.Left + 0.0281524658203));
+            //Правый низ
+            pointLatLngsNineth.Add(new PointLatLng(AlarmMap.ViewArea.Bottom,
+                AlarmMap.ViewArea.Left + AlarmMap.ViewArea.Size.WidthLng / 2));
+            //Правый верх
+            pointLatLngsNineth.Add(new PointLatLng(AlarmMap.ViewArea.Bottom + 0.0070515349649,
+                AlarmMap.ViewArea.Left + AlarmMap.ViewArea.Size.WidthLng / 2));
+
+            GMapPolygon mapPolygonNine = new GMapPolygon(pointLatLngsNineth, "polyNineth");
+            mapPolygonNine.IsVisible = false;
+
+            AlarmmpolyOverlay.Polygons.Add(mapPolygonNine);
+            #endregion
+
+            #region TenthRec
+            //Левый верх
+            pointLatLngsTenth.Add(new PointLatLng(AlarmMap.ViewArea.Bottom + 0.0070515349649,
+                AlarmMap.ViewArea.Left + AlarmMap.ViewArea.Size.WidthLng / 2));
+            //Левый низ
+            pointLatLngsTenth.Add(new PointLatLng(AlarmMap.ViewArea.Bottom,
+                AlarmMap.ViewArea.Left + AlarmMap.ViewArea.Size.WidthLng / 2));
+            //Правый низ
+            pointLatLngsTenth.Add(new PointLatLng(AlarmMap.ViewArea.Bottom ,
+                AlarmMap.ViewArea.Right - 0.0281524658203));
+            //Правый верх
+            pointLatLngsTenth.Add(new PointLatLng(AlarmMap.ViewArea.Bottom + 0.0070515349649,
+                AlarmMap.ViewArea.Right - 0.0281524658203));
+
+            GMapPolygon mapPolygonTen = new GMapPolygon(pointLatLngsTenth, "polyTenth");
+            mapPolygonTen.IsVisible = false;
+
+            AlarmmpolyOverlay.Polygons.Add(mapPolygonTen);
+            #endregion
+
+            #region EleventhRec
+            //Левый верх
+            pointLatLngsEleventh.Add(new PointLatLng(AlarmMap.ViewArea.Top,
+                AlarmMap.ViewArea.Right - 0.0281524658203));
+            //Левый низ
+            pointLatLngsEleventh.Add(new PointLatLng(AlarmMap.ViewArea.Bottom,
+                AlarmMap.ViewArea.Right - 0.0281524658203));
+            //Правый низ
+            pointLatLngsEleventh.Add(new PointLatLng(AlarmMap.ViewArea.Bottom,
+                AlarmMap.ViewArea.Right));
+            //Правый верх
+            pointLatLngsEleventh.Add(new PointLatLng(AlarmMap.ViewArea.Top,
+                AlarmMap.ViewArea.Right));
+
+            GMapPolygon mapPolygonElev = new GMapPolygon(pointLatLngsEleventh, "polyEleventh");
+            mapPolygonElev.IsVisible = false;
+
+            AlarmmpolyOverlay.Polygons.Add(mapPolygonElev);
+            #endregion
+
 
             Polygones = AlarmmpolyOverlay.Polygons;
 

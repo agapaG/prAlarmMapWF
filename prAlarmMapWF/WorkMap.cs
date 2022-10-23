@@ -65,6 +65,15 @@ namespace prAlarmMapWF
         GMapOverlay AlarmmpolyOverlay = new GMapOverlay("polygons");
         List<PointLatLng> pointLatLngs = new List<PointLatLng>();
         List<PointLatLng> pointLatLngsSecond = new List<PointLatLng>();
+        List<PointLatLng> pointLatLngsThird = new List<PointLatLng>();
+        List<PointLatLng> pointLatLngsFourth = new List<PointLatLng>();
+        List<PointLatLng> pointLatLngsFifth = new List<PointLatLng>();
+        List<PointLatLng> pointLatLngsSixth = new List<PointLatLng>();
+        List<PointLatLng> pointLatLngsSeventh = new List<PointLatLng>();
+        List<PointLatLng> pointLatLngsEighth = new List<PointLatLng>();
+        List<PointLatLng> pointLatLngsNineth = new List<PointLatLng>();
+        List<PointLatLng> pointLatLngsTenth = new List<PointLatLng>();
+        List<PointLatLng> pointLatLngsEleventh = new List<PointLatLng>();
         ObservableCollectionThreadSafe<GMapPolygon> Polygones = null;
 
               
