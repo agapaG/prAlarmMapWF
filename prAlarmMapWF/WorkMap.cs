@@ -63,21 +63,10 @@ namespace prAlarmMapWF
         GMapOverlay AlarmmarkersOverlayp13 = new GMapOverlay("Alarmsp13");
 
         GMapOverlay AlarmmpolyOverlay = new GMapOverlay("polygons");
-        List<PointLatLng> pointLatLngs = new List<PointLatLng>();
-        List<PointLatLng> pointLatLngsSecond = new List<PointLatLng>();
-        List<PointLatLng> pointLatLngsThird = new List<PointLatLng>();
-        List<PointLatLng> pointLatLngsFourth = new List<PointLatLng>();
-        List<PointLatLng> pointLatLngsFifth = new List<PointLatLng>();
-        List<PointLatLng> pointLatLngsSixth = new List<PointLatLng>();
-        List<PointLatLng> pointLatLngsSeventh = new List<PointLatLng>();
-        List<PointLatLng> pointLatLngsEighth = new List<PointLatLng>();
-        List<PointLatLng> pointLatLngsNineth = new List<PointLatLng>();
-        List<PointLatLng> pointLatLngsTenth = new List<PointLatLng>();
-        List<PointLatLng> pointLatLngsEleventh = new List<PointLatLng>();
-        ObservableCollectionThreadSafe<GMapPolygon> Polygones = null;
+        GMapOverlay AlarmmpolyOverlaySec = new GMapOverlay("polygonsSec");
 
               
-        //List<DataPackage> dataPackagesCurrent = null;
+        List<DataPackage> dataPackagesCurrent = null;
         List<CGeoLocData> workGeoLocs = new List<CGeoLocData>();
         bool onetime = true;
 
@@ -99,29 +88,9 @@ namespace prAlarmMapWF
 
             //workGeoLocs = workGeoLocs.Distinct().ToList();
             List<CGeoLocData> Current = workGeoLocs.DistinctBy(x => x.AddrC);
+                     
 
-            //cLog.Info($"MapBgWorker_ProgressChanged HeightLat: {AlarmMap.ViewArea.HeightLat}  WidthLng: {AlarmMap.ViewArea.WidthLng}");
-
-            double deltHeight1per10 = AlarmMapViewAreaSizeHeightLat/10.0;
-            double deltHeight1per5 = AlarmMapViewAreaSizeHeightLat/5.0;
-            double deltHeight1per15 = AlarmMapViewAreaSizeHeightLat/15.0;
-            double deltHeight1per20 = AlarmMapViewAreaSizeHeightLat/20.0;
-            double deltHeight1per25 = AlarmMapViewAreaSizeHeightLat/25.0;
-            double deltWidth1per10 = AlarmMapViewAreaSizeWidthLng/10.0;
-            double deltWidth1per15 = AlarmMapViewAreaSizeWidthLng/15.0;
-            double deltWidth1per20 = AlarmMapViewAreaSizeWidthLng/9.0;
-
-            #region левая сторона
-            double latLeft = cPoint.Y + AlarmMapViewAreaSizeHeightLat/2.0 - deltHeight1per15;
-            double lngLeft = cPoint.X - AlarmMapViewAreaSizeWidthLng/2.0 + deltWidth1per20;
-            #endregion
-            #region правая сторона
-            double latRight = cPoint.Y + AlarmMapViewAreaSizeHeightLat/2.0 - deltHeight1per15;
-            double lngRight = cPoint.X + AlarmMapViewAreaSizeWidthLng/2.0 - deltWidth1per20;
-            #endregion
-
-
-            for (int i = 0; i < Current.Count; i++)
+            for (int i = 0; i < Current.Count; ++i)
             {                
                 double pLat = Current[i].Latitude - cPoint.Y;
                 double pLong = Current[i].Longitude - cPoint.X;
@@ -130,142 +99,482 @@ namespace prAlarmMapWF
                 PointLatLng currenyPoint = new PointLatLng(Current[i].Latitude, Current[i].Longitude);
                 
                                 
-                for (int j = 0; j < Polygones.Count; j++)
+                for (int j = 0; j < AlarmmpolyOverlay.Polygons.Count; j++)
                 {                    
-                    if (Polygones[j].IsInside(currenyPoint))
+                    if (AlarmmpolyOverlay.Polygons[j].IsInside(currenyPoint))
                     {
-                        GMapMarker marker = new GMarkerGoogle(
-                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
-                        var ToolTip = new GMapRoundedToolTip(marker)
+                        for (int k = 0; k < AlarmmpolyOverlaySec.Polygons.Count; k++)
                         {
-                            Fill = new SolidBrush(Color.LightGray),
-                            Foreground = new SolidBrush(Color.Black),
-                            TextPadding = new Size(5, 5),
-                            //Offset = new Point(-100, 0),
-                            Stroke = Pens.Black,                            
-                        };
-                        ToolTip.Offset = new Point(-Current[i].AddrC.Length*8, -30);
-                        marker.ToolTip = ToolTip;
-                        marker.ToolTipMode = MarkerTooltipMode.Always;
-                        
-                        //marker.ToolTip.Fill = ToolTipBackColor;
-                        //marker.ToolTip.Fill = Brushes.LightGray;
-                        //marker.ToolTip.Foreground = Brushes.Black;
-                        //marker.ToolTip.Stroke = Pens.Black;
+                            if (AlarmmpolyOverlaySec.Polygons[k].Name.Equals("polySecond"))
+                            {
+                                if (AlarmmpolyOverlaySec.Polygons[k].IsInside(currenyPoint))
+                                {
+                                    GMapMarker marker = new GMarkerGoogle(
+                                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
+                                    var ToolTip = new GMapRoundedToolTip(marker)
+                                    {
+                                        Fill = new SolidBrush(Color.LightGray),
+                                        Foreground = new SolidBrush(Color.Black),
+                                        TextPadding = new Size(5, 5),
+                                        //Offset = new Point(-100, 0),
+                                        Stroke = Pens.Black,
+                                    };
+                                    ToolTip.Offset = new Point(-Current[i].AddrC.Length * 7, -50);
+                                    marker.ToolTip = ToolTip;
+                                    marker.ToolTipMode = MarkerTooltipMode.Always;
 
-                        marker.ToolTipText = Current[i].AddrC;
-                        Size s = ToolTip.TextPadding;
-                        //marker.Size = new Size(2, 2);
+                                    marker.ToolTipText = Current[i].AddrC;
+                                    AlarmmarkersOverlay.Markers.Add(marker);
+                                }
+                            }
 
+                            if (AlarmmpolyOverlaySec.Polygons[k].Name.Equals("polyThird"))
+                            {
+                                if (AlarmmpolyOverlaySec.Polygons[k].IsInside(currenyPoint))
+                                {
+                                    GMapMarker marker = new GMarkerGoogle(
+                                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
+                                    var ToolTip = new GMapRoundedToolTip(marker)
+                                    {
+                                        Fill = new SolidBrush(Color.LightGray),
+                                        Foreground = new SolidBrush(Color.Black),
+                                        TextPadding = new Size(5, 5),
+                                        //Offset = new Point(-100, 0),
+                                        Stroke = Pens.Black,
+                                    };
+                                    ToolTip.Offset = new Point(50, -50);
+                                    marker.ToolTip = ToolTip;
+                                    marker.ToolTipMode = MarkerTooltipMode.Always;
 
-                        AlarmmarkersOverlay.Markers.Add(marker);
+                                    marker.ToolTipText = Current[i].AddrC;
+                                    AlarmmarkersOverlay.Markers.Add(marker);
+                                }
+                            }
+
+                            if (AlarmmpolyOverlaySec.Polygons[k].Name.Equals("polyFourth"))
+                            {
+                                if (AlarmmpolyOverlaySec.Polygons[k].IsInside(currenyPoint))
+                                {
+                                    GMapMarker marker = new GMarkerGoogle(
+                                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
+                                    var ToolTip = new GMapRoundedToolTip(marker)
+                                    {
+                                        Fill = new SolidBrush(Color.LightGray),
+                                        Foreground = new SolidBrush(Color.Black),
+                                        TextPadding = new Size(5, 5),
+                                        //Offset = new Point(-100, 0),
+                                        Stroke = Pens.Black,
+                                    };
+                                    ToolTip.Offset = new Point(50, -50);
+                                    marker.ToolTip = ToolTip;
+                                    marker.ToolTipMode = MarkerTooltipMode.Always;
+
+                                    marker.ToolTipText = Current[i].AddrC;
+                                    AlarmmarkersOverlay.Markers.Add(marker);
+                                }
+                            }
+
+                            if (AlarmmpolyOverlaySec.Polygons[k].Name.Equals("polyFourth"))
+                            {
+                                if (AlarmmpolyOverlaySec.Polygons[k].IsInside(currenyPoint))
+                                {
+                                    GMapMarker marker = new GMarkerGoogle(
+                                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
+                                    var ToolTip = new GMapRoundedToolTip(marker)
+                                    {
+                                        Fill = new SolidBrush(Color.LightGray),
+                                        Foreground = new SolidBrush(Color.Black),
+                                        TextPadding = new Size(5, 5),
+                                        //Offset = new Point(-100, 0),
+                                        Stroke = Pens.Black,
+                                    };
+                                    ToolTip.Offset = new Point(50, -50);
+                                    marker.ToolTip = ToolTip;
+                                    marker.ToolTipMode = MarkerTooltipMode.Always;
+
+                                    marker.ToolTipText = Current[i].AddrC;
+                                    AlarmmarkersOverlay.Markers.Add(marker);
+                                }
+                            }
+
+                            if (AlarmmpolyOverlaySec.Polygons[k].Name.Equals("polyFifth"))
+                            {
+                                if (AlarmmpolyOverlaySec.Polygons[k].IsInside(currenyPoint))
+                                {
+                                    GMapMarker marker = new GMarkerGoogle(
+                                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
+                                    var ToolTip = new GMapRoundedToolTip(marker)
+                                    {
+                                        Fill = new SolidBrush(Color.LightGray),
+                                        Foreground = new SolidBrush(Color.Black),
+                                        TextPadding = new Size(5, 5),
+                                        //Offset = new Point(-100, 0),
+                                        Stroke = Pens.Black,
+                                    };
+                                    ToolTip.Offset = new Point(50, -50);
+                                    marker.ToolTip = ToolTip;
+                                    marker.ToolTipMode = MarkerTooltipMode.Always;
+
+                                    marker.ToolTipText = Current[i].AddrC;
+                                    AlarmmarkersOverlay.Markers.Add(marker);
+                                }
+                            }
+
+                            if (AlarmmpolyOverlaySec.Polygons[k].Name.Equals("polySixth"))
+                            {
+                                if (AlarmmpolyOverlaySec.Polygons[k].IsInside(currenyPoint))
+                                {
+                                    GMapMarker marker = new GMarkerGoogle(
+                                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
+                                    var ToolTip = new GMapRoundedToolTip(marker)
+                                    {
+                                        Fill = new SolidBrush(Color.LightGray),
+                                        Foreground = new SolidBrush(Color.Black),
+                                        TextPadding = new Size(5, 5),
+                                        //Offset = new Point(-100, 0),
+                                        Stroke = Pens.Black,
+                                    };
+                                    ToolTip.Offset = new Point(50, -50);
+                                    marker.ToolTip = ToolTip;
+                                    marker.ToolTipMode = MarkerTooltipMode.Always;
+
+                                    marker.ToolTipText = Current[i].AddrC;
+                                    AlarmmarkersOverlay.Markers.Add(marker);
+                                }
+                            }
+
+                            if (AlarmmpolyOverlaySec.Polygons[k].Name.Equals("polySeventh"))
+                            {
+                                if (AlarmmpolyOverlaySec.Polygons[k].IsInside(currenyPoint))
+                                {
+                                    GMapMarker marker = new GMarkerGoogle(
+                                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
+                                    var ToolTip = new GMapRoundedToolTip(marker)
+                                    {
+                                        Fill = new SolidBrush(Color.LightGray),
+                                        Foreground = new SolidBrush(Color.Black),
+                                        TextPadding = new Size(5, 5),
+                                        //Offset = new Point(-100, 0),
+                                        Stroke = Pens.Black,
+                                    };
+                                    ToolTip.Offset = new Point(50, -50);
+                                    marker.ToolTip = ToolTip;
+                                    marker.ToolTipMode = MarkerTooltipMode.Always;
+
+                                    marker.ToolTipText = Current[i].AddrC;
+                                    AlarmmarkersOverlay.Markers.Add(marker);
+                                }
+                            }
+
+                            if (AlarmmpolyOverlaySec.Polygons[k].Name.Equals("polyEighth"))
+                            {
+                                if (AlarmmpolyOverlaySec.Polygons[k].IsInside(currenyPoint))
+                                {
+                                    GMapMarker marker = new GMarkerGoogle(
+                                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
+                                    var ToolTip = new GMapRoundedToolTip(marker)
+                                    {
+                                        Fill = new SolidBrush(Color.LightGray),
+                                        Foreground = new SolidBrush(Color.Black),
+                                        TextPadding = new Size(5, 5),
+                                        //Offset = new Point(-100, 0),
+                                        Stroke = Pens.Black,
+                                    };
+                                    ToolTip.Offset = new Point(50, -50);
+                                    marker.ToolTip = ToolTip;
+                                    marker.ToolTipMode = MarkerTooltipMode.Always;
+
+                                    marker.ToolTipText = Current[i].AddrC;
+                                    AlarmmarkersOverlay.Markers.Add(marker);
+                                }
+                            }
+
+                            if (AlarmmpolyOverlaySec.Polygons[k].Name.Equals("polyNineth"))
+                            {
+                                if (AlarmmpolyOverlaySec.Polygons[k].IsInside(currenyPoint))
+                                {
+                                    GMapMarker marker = new GMarkerGoogle(
+                                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
+                                    var ToolTip = new GMapRoundedToolTip(marker)
+                                    {
+                                        Fill = new SolidBrush(Color.LightGray),
+                                        Foreground = new SolidBrush(Color.Black),
+                                        TextPadding = new Size(5, 5),
+                                        //Offset = new Point(-100, 0),
+                                        Stroke = Pens.Black,
+                                    };
+                                    ToolTip.Offset = new Point(-Current[i].AddrC.Length * 7, -30);
+                                    marker.ToolTip = ToolTip;
+                                    marker.ToolTipMode = MarkerTooltipMode.Always;
+
+                                    marker.ToolTipText = Current[i].AddrC;
+                                    AlarmmarkersOverlay.Markers.Add(marker);
+                                }
+                            }
+
+                            if (AlarmmpolyOverlaySec.Polygons[k].Name.Equals("polyTenth"))
+                            {
+                                if (AlarmmpolyOverlaySec.Polygons[k].IsInside(currenyPoint))
+                                {
+                                    GMapMarker marker = new GMarkerGoogle(
+                                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
+                                    var ToolTip = new GMapRoundedToolTip(marker)
+                                    {
+                                        Fill = new SolidBrush(Color.LightGray),
+                                        Foreground = new SolidBrush(Color.Black),
+                                        TextPadding = new Size(5, 5),
+                                        //Offset = new Point(-100, 0),
+                                        Stroke = Pens.Black,
+                                    };
+                                    ToolTip.Offset = new Point(0, 10);
+                                    marker.ToolTip = ToolTip;
+                                    marker.ToolTipMode = MarkerTooltipMode.Always;
+
+                                    marker.ToolTipText = Current[i].AddrC;
+                                    AlarmmarkersOverlay.Markers.Add(marker);
+                                }
+                            }
+
+                            if (AlarmmpolyOverlaySec.Polygons[k].Name.Equals("polyEleventh"))
+                            {
+                                if (AlarmmpolyOverlaySec.Polygons[k].IsInside(currenyPoint))
+                                {
+                                    GMapMarker marker = new GMarkerGoogle(
+                                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
+                                    var ToolTip = new GMapRoundedToolTip(marker)
+                                    {
+                                        Fill = new SolidBrush(Color.LightGray),
+                                        Foreground = new SolidBrush(Color.Black),
+                                        TextPadding = new Size(5, 5),
+                                        //Offset = new Point(-100, 0),
+                                        Stroke = Pens.Black,
+                                    };
+                                    ToolTip.Offset = new Point(0, 10);
+                                    marker.ToolTip = ToolTip;
+                                    marker.ToolTipMode = MarkerTooltipMode.Always;
+
+                                    marker.ToolTipText = Current[i].AddrC;
+                                    AlarmmarkersOverlay.Markers.Add(marker);
+                                }
+                            }
+
+                            if (AlarmmpolyOverlaySec.Polygons[k].Name.Equals("polyTvelth"))
+                            {
+                                if (AlarmmpolyOverlaySec.Polygons[k].IsInside(currenyPoint))
+                                {
+                                    GMapMarker marker = new GMarkerGoogle(
+                                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
+                                    var ToolTip = new GMapRoundedToolTip(marker)
+                                    {
+                                        Fill = new SolidBrush(Color.LightGray),
+                                        Foreground = new SolidBrush(Color.Black),
+                                        TextPadding = new Size(5, 5),
+                                        //Offset = new Point(-100, 0),
+                                        Stroke = Pens.Black,
+                                    };
+                                    ToolTip.Offset = new Point(10, 0);
+                                    marker.ToolTip = ToolTip;
+                                    marker.ToolTipMode = MarkerTooltipMode.Always;
+
+                                    marker.ToolTipText = Current[i].AddrC;
+                                    AlarmmarkersOverlay.Markers.Add(marker);
+                                }
+                            }
+
+                            if (AlarmmpolyOverlaySec.Polygons[k].Name.Equals("polyThirteenth"))
+                            {
+                                if (AlarmmpolyOverlaySec.Polygons[k].IsInside(currenyPoint))
+                                {
+                                    GMapMarker marker = new GMarkerGoogle(
+                                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
+                                    var ToolTip = new GMapRoundedToolTip(marker)
+                                    {
+                                        Fill = new SolidBrush(Color.LightGray),
+                                        Foreground = new SolidBrush(Color.Black),
+                                        TextPadding = new Size(5, 5),
+                                        //Offset = new Point(-100, 0),
+                                        Stroke = Pens.Black,
+                                    };
+                                    ToolTip.Offset = new Point(0, -30);
+                                    marker.ToolTip = ToolTip;
+                                    marker.ToolTipMode = MarkerTooltipMode.Always;
+
+                                    marker.ToolTipText = Current[i].AddrC;
+                                    AlarmmarkersOverlay.Markers.Add(marker);
+                                }
+                            }
+
+                            if (AlarmmpolyOverlaySec.Polygons[k].Name.Equals("polyFourteenth"))
+                            {
+                                if (AlarmmpolyOverlaySec.Polygons[k].IsInside(currenyPoint))
+                                {
+                                    GMapMarker marker = new GMarkerGoogle(
+                                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
+                                    var ToolTip = new GMapRoundedToolTip(marker)
+                                    {
+                                        Fill = new SolidBrush(Color.LightGray),
+                                        Foreground = new SolidBrush(Color.Black),
+                                        TextPadding = new Size(5, 5),
+                                        //Offset = new Point(-100, 0),
+                                        Stroke = Pens.Black,
+                                    };
+                                    ToolTip.Offset = new Point(0, -30);
+                                    marker.ToolTip = ToolTip;
+                                    marker.ToolTipMode = MarkerTooltipMode.Always;
+
+                                    marker.ToolTipText = Current[i].AddrC;
+                                    AlarmmarkersOverlay.Markers.Add(marker);
+                                }
+                            }
+
+                            if (AlarmmpolyOverlaySec.Polygons[k].Name.Equals("polyFifteenth"))
+                            {
+                                if (AlarmmpolyOverlaySec.Polygons[k].IsInside(currenyPoint))
+                                {
+                                    GMapMarker marker = new GMarkerGoogle(
+                                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
+                                    var ToolTip = new GMapRoundedToolTip(marker)
+                                    {
+                                        Fill = new SolidBrush(Color.LightGray),
+                                        Foreground = new SolidBrush(Color.Black),
+                                        TextPadding = new Size(5, 5),
+                                        //Offset = new Point(-100, 0),
+                                        Stroke = Pens.Black,
+                                    };
+                                    ToolTip.Offset = new Point(-Current[i].AddrC.Length * 7, 0);
+                                    marker.ToolTip = ToolTip;
+                                    marker.ToolTipMode = MarkerTooltipMode.Always;
+
+                                    marker.ToolTipText = Current[i].AddrC;
+                                    AlarmmarkersOverlay.Markers.Add(marker);
+                                }
+                            }
+                        }
                     }
-                    //else
-                    //{
+                    else
+                    {
 
-                    //    if (pLat > 0 && pLong > 0)
-                    //    {
-                    //        double cnAlpha = pLong / Mod;
-                    //        double Alpha = Math.Acos(cnAlpha) * (180.0 / Math.PI);
+                        //if (pLat > 0 && pLong > 0)
+                        //{
+                        //    double cnAlpha = pLong / Mod;
+                        //    double Alpha = Math.Acos(cnAlpha) * (180.0 / Math.PI);
 
-                    //        if ((90.0 - Alpha) < 45.0)
-                    //        {
-                    //            Bitmap bmp8 = _createRightMarker(Current[i].AddrC);
+                        //    if ((90.0 - Alpha) < 45.0)
+                        //    {
+                        //        Bitmap bmp8 = _createRightMarker(Current[i].AddrC);
 
-                    //            GMapMarker marker1 = new GMarkerGoogle(
-                    //                new PointLatLng(cPoint.Y, cPoint.X), bmp8);
+                        //        GMapMarker marker1 = new GMarkerGoogle(
+                        //            new PointLatLng(cPoint.Y, cPoint.X), bmp8);
 
-                    //            latRight -= deltHeight1per15;
-                    //            marker1.Position = new PointLatLng(latRight, lngRight);
+                        //        latRight -= deltHeight1per15;
+                        //        marker1.Position = new PointLatLng(latRight, lngRight);
 
-                    //            AlarmmarkersOverlayp13.Markers.Add(marker1);
-                    //        }
-                    //        if ((90.0 - Alpha) > 55.0)
-                    //        {
-                    //            Bitmap bmp8 = _createRightUpMarker(Current[i].AddrC);
+                        //        AlarmmarkersOverlayp13.Markers.Add(marker1);
+                        //    }
+                        //    if ((90.0 - Alpha) > 55.0)
+                        //    {
+                        //        Bitmap bmp8 = _createRightUpMarker(Current[i].AddrC);
 
-                    //            GMapMarker marker1 = new GMarkerGoogle(
-                    //                new PointLatLng(cPoint.Y, cPoint.X), bmp8);
+                        //        GMapMarker marker1 = new GMarkerGoogle(
+                        //            new PointLatLng(cPoint.Y, cPoint.X), bmp8);
 
-                    //            latRight -= deltHeight1per15;
-                    //            marker1.Position = new PointLatLng(latRight, lngRight);
+                        //        latRight -= deltHeight1per15;
+                        //        marker1.Position = new PointLatLng(latRight, lngRight);
 
-                    //            AlarmmarkersOverlayp13.Markers.Add(marker1);
-                    //        }
-                    //    }
-                    //    if (pLat < 0 && pLong < 0)
-                    //    {
-                    //        double cnAlpha = pLong / Mod;
-                    //        double Alpha = Math.Acos(cnAlpha) * (180.0 / Math.PI);
+                        //        AlarmmarkersOverlayp13.Markers.Add(marker1);
+                        //    }
+                        //}
+                        if (pLong < 0)
+                        {
 
-                    //        if ((180.0 - Alpha) < 35.0)
-                    //        {
-                    //            Bitmap bmp8 = _createLeftMarker(Current[i].AddrC);
+                            GMapMarker marker = new GMarkerGoogle(
+                                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_dot);
+                            var ToolTip = new GMapRoundedToolTip(marker)
+                            {
+                                Fill = new SolidBrush(Color.LightGray),
+                                Foreground = new SolidBrush(Color.Black),
+                                TextPadding = new Size(5, 5),
+                                //Offset = new Point(-100, 0),
+                                Stroke = Pens.Black,
+                            };
+                            ToolTip.Offset = new Point(10, 0);
+                            marker.ToolTip = ToolTip;
+                            marker.ToolTipMode = MarkerTooltipMode.Always;
 
-                    //            GMapMarker marker1 = new GMarkerGoogle(
-                    //                new PointLatLng(cPoint.Y, cPoint.X), bmp8);
+                            marker.ToolTipText = Current[i].AddrC;
+                            AlarmmarkersOverlay.Markers.Add(marker);
 
-                    //            marker1.Position = new PointLatLng(latLeft, lngLeft);
+                            //double cnAlpha = pLong / Mod;
+                            //double Alpha = Math.Acos(cnAlpha) * (180.0 / Math.PI);
 
-                    //            AlarmmarkersOverlayp13.Markers.Add(marker1);
+                            //if ((180.0 - Alpha) < 35.0)
+                            //{
+                            //    Bitmap bmp8 = _createLeftMarker(Current[i].AddrC);
 
-                    //            //lngRight -= deltHeight1per25;
+                            //    GMapMarker marker1 = new GMarkerGoogle(
+                            //        new PointLatLng(cPoint.Y, cPoint.X), bmp8);
 
-                    //            //Bitmap bmp81 = _createLestDownMarker(workGeoLocs[i].AddrC);
-                    //            //GMapMarker marker11 = new GMarkerGoogle(
-                    //            //    new PointLatLng(cPoint.Y, cPoint.X), bmp81);
+                            //    marker1.Position = new PointLatLng(latLeft, lngLeft);
 
-                    //            //lngRight -= deltHeight1per15;
-                    //            ////lngRight = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0 + deltWidth1per20;
+                            //    AlarmmarkersOverlayp13.Markers.Add(marker1);
 
-                    //            //marker11.Position = new PointLatLng(latLeft, lngRight);
+                            //    //lngRight -= deltHeight1per25;
 
-                    //            //AlarmmarkersOverlayp13.Markers.Add(marker11);
-                    //            //Bitmap bmp81 = _createLeftMarker(workGeoLocs[i].AddrC + "1");
+                            //    //Bitmap bmp81 = _createLestDownMarker(workGeoLocs[i].AddrC);
+                            //    //GMapMarker marker11 = new GMarkerGoogle(
+                            //    //    new PointLatLng(cPoint.Y, cPoint.X), bmp81);
 
-                    //            //latLeft -= deltHeight1per15;
-                    //            //lngRight = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0
-                    //            //    + deltWidth1per20;
+                            //    //lngRight -= deltHeight1per15;
+                            //    ////lngRight = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0 + deltWidth1per20;
 
+                            //    //marker11.Position = new PointLatLng(latLeft, lngRight);
 
-                    //            //GMapMarker marker2 = new GMarkerGoogle(
-                    //            //    new PointLatLng(cPoint.Y, cPoint.X), bmp81);
+                            //    //AlarmmarkersOverlayp13.Markers.Add(marker11);
+                            //    //Bitmap bmp81 = _createLeftMarker(workGeoLocs[i].AddrC + "1");
 
-                    //            //marker2.Position = new PointLatLng(latLeft, lngRight);
-                    //            //AlarmmarkersOverlayp13.Markers.Add(marker2);
-
-                    //        }
-                    //        if ((180.0 - Alpha) > 55.0)
-                    //        {
-                    //            Bitmap bmp8 = _createLeftDownMarker(Current[i].AddrC);
-                    //            GMapMarker marker1 = new GMarkerGoogle(
-                    //                new PointLatLng(cPoint.Y, cPoint.X), bmp8);
-
-                    //            latLeft -= deltHeight1per15;
-                    //            lngLeft = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0 + deltWidth1per20;
-
-                    //            marker1.Position = new PointLatLng(latLeft, lngLeft);
-
-                    //            AlarmmarkersOverlayp13.Markers.Add(marker1);
-                    //        }
-
-                    //        if ((180.0 - Alpha) < 55.0 && (180.0 - Alpha) > 36.0)
-                    //        {
-                    //            Bitmap bmp8 = _createLeftDown45LMarker(Current[i].AddrC);
-                    //            GMapMarker marker1 = new GMarkerGoogle(
-                    //                new PointLatLng(cPoint.Y, cPoint.X), bmp8);
-
-                    //            latLeft -= deltHeight1per15;
-                    //            lngLeft = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0 + deltWidth1per20;
-
-                    //            marker1.Position = new PointLatLng(latLeft, lngLeft);
-
-                    //            AlarmmarkersOverlayp13.Markers.Add(marker1);
-                    //        }
-                    //    }
+                            //    //latLeft -= deltHeight1per15;
+                            //    //lngRight = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0
+                            //    //    + deltWidth1per20;
 
 
-                    //}
+                            //    //GMapMarker marker2 = new GMarkerGoogle(
+                            //    //    new PointLatLng(cPoint.Y, cPoint.X), bmp81);
+
+                            //    //marker2.Position = new PointLatLng(latLeft, lngRight);
+                            //    //AlarmmarkersOverlayp13.Markers.Add(marker2);
+
+                            //}
+                            //if ((180.0 - Alpha) > 55.0)
+                            //{
+                            //    Bitmap bmp8 = _createLeftDownMarker(Current[i].AddrC);
+                            //    GMapMarker marker1 = new GMarkerGoogle(
+                            //        new PointLatLng(cPoint.Y, cPoint.X), bmp8);
+
+                            //    latLeft -= deltHeight1per15;
+                            //    lngLeft = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0 + deltWidth1per20;
+
+                            //    marker1.Position = new PointLatLng(latLeft, lngLeft);
+
+                            //    AlarmmarkersOverlayp13.Markers.Add(marker1);
+                            //}
+
+                            //if ((180.0 - Alpha) < 55.0 && (180.0 - Alpha) > 36.0)
+                            //{
+                            //    Bitmap bmp8 = _createLeftDown45LMarker(Current[i].AddrC);
+                            //    GMapMarker marker1 = new GMarkerGoogle(
+                            //        new PointLatLng(cPoint.Y, cPoint.X), bmp8);
+
+                            //    latLeft -= deltHeight1per15;
+                            //    lngLeft = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0 + deltWidth1per20;
+
+                            //    marker1.Position = new PointLatLng(latLeft, lngLeft);
+
+                            //    AlarmmarkersOverlayp13.Markers.Add(marker1);
+                            //}
+                        }
+
+
+                    }
                 }
                 /*
                 if (mod < (0.009 * 13.1))
@@ -383,32 +692,13 @@ namespace prAlarmMapWF
 
                 try
                 {
-                    //int count = ReadBuff_WTbl._get_rowscount();
-                    //if (count < 0 || count < 1)
-                    //    continue;
-                    //if (glMarCountCurr != count)
-                    //{
-                    //    Program.nRec = 0;
-                    //    workGeoLocs.Clear();
-                    //    glMarCountCurr = count;
-                    //}
+                    //**********************************************************************
 
                     //dataPackagesCurrent = (List<DataPackage>)ReadBuff_WTbl._getbuff_work(Program.nRec);
-                    //if (dataPackages.Count == 0)
-                    //    continue;
-
-                    //dataPackages = dataPackagesCurrent;
-                    //glMarCount = dataPackagesCurrent.Count;
-
-                    //if (glMarCount != glMarCountCurr)
-                    //{
-                    //}
 
                     //for (int i = 0; i < dataPackagesCurrent.Count; i++)
                     //{
                     //    string strtmp = _addrParse(dataPackagesCurrent[i].N03s[0].Adr);
-                    //    //if (geoLocNames.Contains(dataPackagesCurrent[i].N03s[0].Adr))
-                    //    //    continue;
 
                     //    CGeoLocData cGeoLocData = new CGeoLocData();
                     //    cGeoLocData = cGeoLocDatas.Find(item => item.AddrC.Equals(strtmp));
@@ -455,6 +745,8 @@ namespace prAlarmMapWF
                     //    }
                     //}
 
+                    //**********************************************************************
+
                     //if (dataPackagesCurrent.Count != 0)
                     //    Program.nRec = dataPackagesCurrent[dataPackagesCurrent.Count - 1].Rec;
 
@@ -465,51 +757,51 @@ namespace prAlarmMapWF
                     CGeoLocData cGD = new CGeoLocData();
                     cGD.AddrC = "Test 3ч. > 180 г. Харьков, пр. Науки, 9; 1 подъезд";
                     cGD.AddrM = "...";
-                    cGD.Latitude = 49.9521035303313;
-                    cGD.Longitude = 36.1384963989258;
+                    cGD.Latitude = 50.0712436604447;
+                    cGD.Longitude = 36.0447692871094;
                     workGeoLocs.Add(cGD);
-                    CGeoLocData cGD1 = new CGeoLocData();
-                    cGD1.AddrC = "Test 4ч. > 270 г. Харьков, пр. Гагарина, 72";
-                    cGD1.AddrM = "...";
-                    cGD1.Latitude = 49.9213881695726;
-                    cGD1.Longitude = 36.4481735229492;
-                    workGeoLocs.Add(cGD1);
-                    CGeoLocData cGDm1 = new CGeoLocData();
-                    cGDm1.AddrC = "Test 4ч. > 180 г. Харьков, пр. Науки, 9; 2 подъезд";
-                    cGDm1.AddrM = "...";
-                    cGDm1.Latitude = 49.9220512977633;
-                    cGDm1.Longitude = 36.4217376708984;
-                    workGeoLocs.Add(cGDm1);
-                    CGeoLocData cGDm2 = new CGeoLocData();
-                    cGDm2.AddrC = "Test 4ч. > 180 г. Харьков, пр. Науки, 9; 3 подъезд";
-                    cGDm2.AddrM = "...";
-                    cGDm2.Latitude = 49.9220512977633;
-                    cGDm2.Longitude = 36.3980484008789;
-                    workGeoLocs.Add(cGDm2);
-                    CGeoLocData cGD2 = new CGeoLocData();
-                    cGD2.AddrC = "Test 1ч. ~ 45 с. Орелька";
-                    cGD2.AddrM = "...";
-                    cGD2.Latitude = 50.0370762517441;
-                    cGD2.Longitude = 36.3585662841797;
-                    workGeoLocs.Add(cGD2);
-                    CGeoLocData cGD2d = new CGeoLocData();
-                    cGD2d.AddrC = "Test 1ч. ~ 45 с. Орелька";
-                    cGD2d.AddrM = "...";
-                    cGD2d.Latitude = 50.0370762517441;
-                    cGD2d.Longitude = 36.3585662841797;
-                    workGeoLocs.Add(cGD2d);
-                    CGeoLocData cGD2d1 = new CGeoLocData();
-                    cGD2d1.AddrC = "Test 1ч. ~ 45 с. Орелька";
-                    cGD2d1.AddrM = "...";
-                    cGD2d1.Latitude = 50.0370762517441;
-                    cGD2d1.Longitude = 36.3585662841797;
-                    workGeoLocs.Add(cGD2d1);
-                    CGeoLocData cGD3 = new CGeoLocData();
-                    cGD3.AddrC = "Test 2ч. ~ < 45 г. Змиев, ул. Железнодорожная, 120";
-                    cGD3.AddrM = "...";
-                    cGD3.Latitude = 50.0670567057486;
-                    cGD3.Longitude = 36.0224533081055;
-                    workGeoLocs.Add(cGD3);
+                    //CGeoLocData cGD1 = new CGeoLocData();
+                    //cGD1.AddrC = "Test 4ч. > 270 г. Харьков, пр. Гагарина, 72";
+                    //cGD1.AddrM = "...";
+                    //cGD1.Latitude = 49.9213881695726;
+                    //cGD1.Longitude = 36.4481735229492;
+                    //workGeoLocs.Add(cGD1);
+                    //CGeoLocData cGDm1 = new CGeoLocData();
+                    //cGDm1.AddrC = "Test 4ч. > 180 г. Харьков, пр. Науки, 9; 2 подъезд";
+                    //cGDm1.AddrM = "...";
+                    //cGDm1.Latitude = 49.9220512977633;
+                    //cGDm1.Longitude = 36.4217376708984;
+                    //workGeoLocs.Add(cGDm1);
+                    //CGeoLocData cGDm2 = new CGeoLocData();
+                    //cGDm2.AddrC = "Test 4ч. > 180 г. Харьков, пр. Науки, 9; 3 подъезд";
+                    //cGDm2.AddrM = "...";
+                    //cGDm2.Latitude = 49.9220512977633;
+                    //cGDm2.Longitude = 36.3980484008789;
+                    //workGeoLocs.Add(cGDm2);
+                    //CGeoLocData cGD2 = new CGeoLocData();
+                    //cGD2.AddrC = "Test 1ч. ~ 45 с. Орелька";
+                    //cGD2.AddrM = "...";
+                    //cGD2.Latitude = 50.0370762517441;
+                    //cGD2.Longitude = 36.3585662841797;
+                    //workGeoLocs.Add(cGD2);
+                    //CGeoLocData cGD2d = new CGeoLocData();
+                    //cGD2d.AddrC = "Test 1ч. ~ 45 с. Орелька";
+                    //cGD2d.AddrM = "...";
+                    //cGD2d.Latitude = 50.0370762517441;
+                    //cGD2d.Longitude = 36.3585662841797;
+                    //workGeoLocs.Add(cGD2d);
+                    //CGeoLocData cGD2d1 = new CGeoLocData();
+                    //cGD2d1.AddrC = "Test 1ч. ~ 45 с. Орелька";
+                    //cGD2d1.AddrM = "...";
+                    //cGD2d1.Latitude = 50.0370762517441;
+                    //cGD2d1.Longitude = 36.3585662841797;
+                    //workGeoLocs.Add(cGD2d1);
+                    //CGeoLocData cGD3 = new CGeoLocData();
+                    //cGD3.AddrC = "Test 2ч. ~ < 45 г. Змиев, ул. Железнодорожная, 120";
+                    //cGD3.AddrM = "...";
+                    //cGD3.Latitude = 50.0721250780141;
+                    //cGD3.Longitude = 36.1079406738281;
+                    //workGeoLocs.Add(cGD3);
 
 
                     /*
