@@ -13,7 +13,9 @@ namespace prAlarmMapWF.Data
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public string AddrC { get; set; }
+        public string AddrRender { get; set; }
         public string AddrM { get; set; }
+        
 
         #region IEquatable method
         public bool Equals(CGeoLocData other)

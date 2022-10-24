@@ -88,8 +88,9 @@ namespace prAlarmMapWF
 
             //workGeoLocs = workGeoLocs.Distinct().ToList();
             List<CGeoLocData> Current = workGeoLocs.DistinctBy(x => x.AddrC);
-                     
 
+            double leftout = AlarmMap.ViewArea.Top - 0.0070515349659;
+            double delta = 0.006;
             for (int i = 0; i < Current.Count; ++i)
             {                
                 double pLat = Current[i].Latitude - cPoint.Y;
@@ -119,11 +120,11 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(-Current[i].AddrC.Length * 7, -50);
+                                    ToolTip.Offset = new Point(-Current[i].AddrC.Length * 7, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
-                                    marker.ToolTipText = Current[i].AddrC;
+                                    marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
                                 }
                             }
@@ -142,11 +143,11 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(50, -50);
+                                    ToolTip.Offset = new Point(50, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
-                                    marker.ToolTipText = Current[i].AddrC;
+                                    marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
                                 }
                             }
@@ -165,11 +166,11 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(50, -50);
+                                    ToolTip.Offset = new Point(50, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
-                                    marker.ToolTipText = Current[i].AddrC;
+                                    marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
                                 }
                             }
@@ -188,11 +189,11 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(50, -50);
+                                    ToolTip.Offset = new Point(50, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
-                                    marker.ToolTipText = Current[i].AddrC;
+                                    marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
                                 }
                             }
@@ -211,11 +212,11 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(50, -50);
+                                    ToolTip.Offset = new Point(50, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
-                                    marker.ToolTipText = Current[i].AddrC;
+                                    marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
                                 }
                             }
@@ -234,11 +235,11 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(50, -50);
+                                    ToolTip.Offset = new Point(50, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
-                                    marker.ToolTipText = Current[i].AddrC;
+                                    marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
                                 }
                             }
@@ -257,11 +258,11 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(50, -50);
+                                    ToolTip.Offset = new Point(50, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
-                                    marker.ToolTipText = Current[i].AddrC;
+                                    marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
                                 }
                             }
@@ -280,11 +281,11 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(50, -50);
+                                    ToolTip.Offset = new Point(50, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
-                                    marker.ToolTipText = Current[i].AddrC;
+                                    marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
                                 }
                             }
@@ -303,11 +304,11 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(-Current[i].AddrC.Length * 7, -30);
+                                    ToolTip.Offset = new Point(-Current[i].AddrC.Length * 7, -50);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
-                                    marker.ToolTipText = Current[i].AddrC;
+                                    marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
                                 }
                             }
@@ -330,7 +331,7 @@ namespace prAlarmMapWF
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
-                                    marker.ToolTipText = Current[i].AddrC;
+                                    marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
                                 }
                             }
@@ -353,7 +354,7 @@ namespace prAlarmMapWF
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
-                                    marker.ToolTipText = Current[i].AddrC;
+                                    marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
                                 }
                             }
@@ -376,7 +377,7 @@ namespace prAlarmMapWF
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
-                                    marker.ToolTipText = Current[i].AddrC;
+                                    marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
                                 }
                             }
@@ -395,11 +396,11 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(0, -30);
+                                    ToolTip.Offset = new Point(0, -10);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
-                                    marker.ToolTipText = Current[i].AddrC;
+                                    marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
                                 }
                             }
@@ -418,11 +419,11 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(0, -30);
+                                    ToolTip.Offset = new Point(0, -10);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
-                                    marker.ToolTipText = Current[i].AddrC;
+                                    marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
                                 }
                             }
@@ -445,7 +446,7 @@ namespace prAlarmMapWF
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
-                                    marker.ToolTipText = Current[i].AddrC;
+                                    marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
                                 }
                             }
@@ -486,9 +487,9 @@ namespace prAlarmMapWF
                         //}
                         if (pLong < 0)
                         {
-
+                            //AlarmMap.ViewArea.Size.HeightLat
                             GMapMarker marker = new GMarkerGoogle(
-                                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_dot);
+                                        new PointLatLng(leftout, AlarmMap.ViewArea.Left), GMarkerGoogleType.red_small);
                             var ToolTip = new GMapRoundedToolTip(marker)
                             {
                                 Fill = new SolidBrush(Color.LightGray),
@@ -500,9 +501,12 @@ namespace prAlarmMapWF
                             ToolTip.Offset = new Point(10, 0);
                             marker.ToolTip = ToolTip;
                             marker.ToolTipMode = MarkerTooltipMode.Always;
+                            marker.Size = new Size(2, 2);   
 
-                            marker.ToolTipText = Current[i].AddrC;
+                            marker.ToolTipText = Current[i].AddrRender;
                             AlarmmarkersOverlay.Markers.Add(marker);
+
+                            leftout -= delta;
 
                             //double cnAlpha = pLong / Mod;
                             //double Alpha = Math.Acos(cnAlpha) * (180.0 / Math.PI);
@@ -694,56 +698,56 @@ namespace prAlarmMapWF
                 {
                     //**********************************************************************
 
-                    //dataPackagesCurrent = (List<DataPackage>)ReadBuff_WTbl._getbuff_work(Program.nRec);
+                    dataPackagesCurrent = (List<DataPackage>)ReadBuff_WTbl._getbuff_work(Program.nRec);
 
-                    //for (int i = 0; i < dataPackagesCurrent.Count; i++)
-                    //{
-                    //    string strtmp = _addrParse(dataPackagesCurrent[i].N03s[0].Adr);
+                    for (int i = 0; i < dataPackagesCurrent.Count; i++)
+                    {
+                        string strtmp = _addrParse(dataPackagesCurrent[i].N03s[0].Adr);
 
-                    //    CGeoLocData cGeoLocData = new CGeoLocData();
-                    //    cGeoLocData = cGeoLocDatas.Find(item => item.AddrC.Equals(strtmp));
-                    //    if (cGeoLocData != null)
-                    //    {
-                    //        var var1 = Program.n04s.Find(item => item.Id == dataPackagesCurrent[i].N03s[0].Id);
-                    //        if (var1 != null)
-                    //        {
-                    //            if (var1.Status.Trim().Equals("Расторгнут"))
-                    //                continue;
-                    //        }
-                    //        else
-                    //            continue;
+                        CGeoLocData cGeoLocData = new CGeoLocData();
+                        cGeoLocData = cGeoLocDatas.Find(item => item.AddrC.Equals(strtmp));
+                        if (cGeoLocData != null)
+                        {
+                            var var1 = Program.n04s.Find(item => item.Id == dataPackagesCurrent[i].N03s[0].Id);
+                            if (var1 != null)
+                            {
+                                if (var1.Status.Trim().Equals("Расторгнут"))
+                                    continue;
+                            }
+                            else
+                                continue;
 
-                    //        CGeoLocData work = new CGeoLocData();
-                    //        //tmp = cGeoLocDatas.Find
-                    //        string tmp = dataPackagesCurrent[i].Tcentral + "  ";
-                    //        tmp += dataPackagesCurrent[i].Time + "  ";
-                    //        tmp += cGeoLocData.AddrC;
-                    //        work.AddrC = tmp;
-                    //        work.Latitude = cGeoLocData.Latitude;
-                    //        work.Longitude = cGeoLocData.Longitude;
-                    //        work.AddrM = cGeoLocData.AddrM;
-                    //        work.NCentral = dataPackagesCurrent[i].Tcentral;
-                    //        work.Time = dataPackagesCurrent[i].Time;
-                    //        workGeoLocs.Add(work);
+                            CGeoLocData work = new CGeoLocData();
+                            //tmp = cGeoLocDatas.Find
+                            string tmp = dataPackagesCurrent[i].Tcentral + "  ";
+                            tmp += dataPackagesCurrent[i].Time + "  ";
+                            tmp += cGeoLocData.AddrC;
+                            work.AddrRender = tmp;
+                            work.AddrC = cGeoLocData.AddrC;
+                            work.Latitude = cGeoLocData.Latitude;
+                            work.Longitude = cGeoLocData.Longitude;
+                            work.NCentral = dataPackagesCurrent[i].Tcentral;
+                            work.Time = dataPackagesCurrent[i].Time;
+                            workGeoLocs.Add(work);
 
-                    //        //geoLocNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
-                    //    }
-                    //    else
-                    //    {
-                    //        if (onetime)
-                    //        {
-                    //            CGeoLocData tmp = new CGeoLocData();
-                    //            tmp.AddrC = "Улица Деревянко 3";
-                    //            tmp.AddrM = "...";
-                    //            tmp.Latitude = 50.03690493334075;
-                    //            tmp.Longitude = 36.23892659172058;
+                            //geoLocNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
+                        }
+                        else
+                        {
+                            if (onetime)
+                            {
+                                CGeoLocData tmp = new CGeoLocData();
+                                tmp.AddrC = "Улица Деревянко 3";
+                                tmp.AddrM = "...";
+                                tmp.Latitude = 50.03690493334075;
+                                tmp.Longitude = 36.23892659172058;
 
-                    //            workGeoLocs.Add(tmp);
+                                workGeoLocs.Add(tmp);
 
-                    //            onetime = false;
-                    //        }
-                    //    }
-                    //}
+                                onetime = false;
+                            }
+                        }
+                    }
 
                     //**********************************************************************
 
@@ -754,12 +758,12 @@ namespace prAlarmMapWF
                     //точка для анализа
                     //lat 49,899942109186
                     //long 35,809936523
-                    CGeoLocData cGD = new CGeoLocData();
-                    cGD.AddrC = "Test 3ч. > 180 г. Харьков, пр. Науки, 9; 1 подъезд";
-                    cGD.AddrM = "...";
-                    cGD.Latitude = 50.0712436604447;
-                    cGD.Longitude = 36.0447692871094;
-                    workGeoLocs.Add(cGD);
+                    //CGeoLocData cGD = new CGeoLocData();
+                    //cGD.AddrC = "Test 3ч. > 180 г. Харьков, пр. Науки, 9; 1 подъезд";
+                    //cGD.AddrM = "...";
+                    //cGD.Latitude = 50.0712436604447;
+                    //cGD.Longitude = 36.0447692871094;
+                    //workGeoLocs.Add(cGD);
                     //CGeoLocData cGD1 = new CGeoLocData();
                     //cGD1.AddrC = "Test 4ч. > 270 г. Харьков, пр. Гагарина, 72";
                     //cGD1.AddrM = "...";
