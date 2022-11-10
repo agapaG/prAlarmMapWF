@@ -38,7 +38,9 @@ namespace prAlarmMapWF.DbServices
                         tbl.Tcentral = reader.IsDBNull(3) ? null : reader.GetString(3);
                         tbl.Time = reader.IsDBNull(8) ? null : reader.GetDateTime(8).ToString();
                         tbl.Rec = reader.GetInt32(9);
-                                                
+                        tbl.Color = (byte)(reader.IsDBNull(11) ? 0x00 : reader.GetByte(11));
+
+
                         tbl.N03s = Program.n03s.FindAll(item => Equals(item.Nb, tbl.Tcentral));
                         
                         if (tbl.N03s.Count != 0)   

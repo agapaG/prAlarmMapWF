@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Map));
             this.AlarmMap = new GMap.NET.WindowsForms.GMapControl();
             this.label1 = new System.Windows.Forms.Label();
             this.tLan = new System.Windows.Forms.TextBox();
@@ -126,6 +127,7 @@
             this.Controls.Add(this.tLan);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.AlarmMap);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Map";
             this.Text = "AlarmMap";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Map_FormClosing);

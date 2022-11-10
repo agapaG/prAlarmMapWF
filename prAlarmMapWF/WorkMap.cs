@@ -20,6 +20,8 @@ using prAlarmMapWF.Data;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
+using NLog;
+
 namespace prAlarmMapWF
 {
     internal class CPoint
@@ -47,6 +49,8 @@ namespace prAlarmMapWF
 
     public partial class Map : Form
     {
+        Logger bloc = NLog.LogManager.GetLogger("LogBLoc");
+
         EventWaitHandle eventWait;
         EventWaitHandle eventWaitProc;
 
@@ -90,6 +94,8 @@ namespace prAlarmMapWF
             List<CGeoLocData> Current = workGeoLocs.DistinctBy(x => x.AddrC);
 
             double leftout = AlarmMap.ViewArea.Top - 0.0070515349659;
+            double rightout = AlarmMap.ViewArea.Top - 0.0070515349659;
+            //double leftout = AlarmMapViewAreaSizeHeightLat - 0.0070515349659;
             double delta = 0.006;
             for (int i = 0; i < Current.Count; ++i)
             {                
@@ -113,19 +119,26 @@ namespace prAlarmMapWF
                                     GMapMarker marker = new GMarkerGoogle(
                                         new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
                                     var ToolTip = new GMapRoundedToolTip(marker)
-                                    {
-                                        Fill = new SolidBrush(Color.LightGray),
+                                    {       
                                         Foreground = new SolidBrush(Color.Black),
                                         TextPadding = new Size(5, 5),
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(-Current[i].AddrC.Length * 7, -30);
+                                    if (Current[i].Color == 1)
+                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                    else if (Current[i].Color == 2) 
+                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                    else if (Current[i].Color == 3)
+                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
+                                    ToolTip.Offset = new Point(-Current[i].AddrC.Length * 8, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
                                     marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
+                                    break;
                                 }
                             }
 
@@ -135,20 +148,40 @@ namespace prAlarmMapWF
                                 {
                                     GMapMarker marker = new GMarkerGoogle(
                                         new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
+
                                     var ToolTip = new GMapRoundedToolTip(marker)
                                     {
-                                        Fill = new SolidBrush(Color.LightGray),
                                         Foreground = new SolidBrush(Color.Black),
                                         TextPadding = new Size(5, 5),
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(50, -30);
+
+                                    int index = Current[i].AddrRender.IndexOf("Улица Деревянко");
+                                    if (index < 0)
+                                    {
+                                      
+                                        if (Current[i].Color == 1)
+                                            ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                        else if (Current[i].Color == 2)
+                                            ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                        else if (Current[i].Color == 3)
+                                            ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                        
+                                    }
+                                    else if (index > 0)
+                                    {
+                                        ToolTip.Fill = new SolidBrush(Color.LightGray);
+                                    }
+
+                                    ToolTip.Offset = new Point(30, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
                                     marker.ToolTipText = Current[i].AddrRender;
+
                                     AlarmmarkersOverlay.Markers.Add(marker);
+                                    break;
                                 }
                             }
 
@@ -160,18 +193,24 @@ namespace prAlarmMapWF
                                         new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
                                     var ToolTip = new GMapRoundedToolTip(marker)
                                     {
-                                        Fill = new SolidBrush(Color.LightGray),
                                         Foreground = new SolidBrush(Color.Black),
                                         TextPadding = new Size(5, 5),
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(50, -30);
+                                    if (Current[i].Color == 1)
+                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                    else if (Current[i].Color == 2)
+                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                    else if (Current[i].Color == 3)
+                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                    ToolTip.Offset = new Point(30, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
                                     marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
+                                    break;
                                 }
                             }
 
@@ -183,18 +222,24 @@ namespace prAlarmMapWF
                                         new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
                                     var ToolTip = new GMapRoundedToolTip(marker)
                                     {
-                                        Fill = new SolidBrush(Color.LightGray),
                                         Foreground = new SolidBrush(Color.Black),
                                         TextPadding = new Size(5, 5),
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(50, -30);
+                                    if (Current[i].Color == 1)
+                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                    else if (Current[i].Color == 2)
+                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                    else if (Current[i].Color == 3)
+                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                    ToolTip.Offset = new Point(30, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
                                     marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
+                                    break;
                                 }
                             }
 
@@ -206,18 +251,25 @@ namespace prAlarmMapWF
                                         new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
                                     var ToolTip = new GMapRoundedToolTip(marker)
                                     {
-                                        Fill = new SolidBrush(Color.LightGray),
                                         Foreground = new SolidBrush(Color.Black),
                                         TextPadding = new Size(5, 5),
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(50, -30);
+                                    if (Current[i].Color == 1)
+                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                    else if (Current[i].Color == 2)
+                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                    else if (Current[i].Color == 3)
+                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
+                                    ToolTip.Offset = new Point(30, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
                                     marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
+                                    break;
                                 }
                             }
 
@@ -229,18 +281,25 @@ namespace prAlarmMapWF
                                         new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
                                     var ToolTip = new GMapRoundedToolTip(marker)
                                     {
-                                        Fill = new SolidBrush(Color.LightGray),
                                         Foreground = new SolidBrush(Color.Black),
                                         TextPadding = new Size(5, 5),
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(50, -30);
+                                    if (Current[i].Color == 1)
+                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                    else if (Current[i].Color == 2)
+                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                    else if (Current[i].Color == 3)
+                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
+                                    ToolTip.Offset = new Point(30, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
                                     marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
+                                    break;
                                 }
                             }
 
@@ -252,18 +311,25 @@ namespace prAlarmMapWF
                                         new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
                                     var ToolTip = new GMapRoundedToolTip(marker)
                                     {
-                                        Fill = new SolidBrush(Color.LightGray),
                                         Foreground = new SolidBrush(Color.Black),
                                         TextPadding = new Size(5, 5),
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(50, -30);
+                                    if (Current[i].Color == 1)
+                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                    else if (Current[i].Color == 2)
+                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                    else if (Current[i].Color == 3)
+                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
+                                    ToolTip.Offset = new Point(30, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
                                     marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
+                                    break;
                                 }
                             }
 
@@ -275,18 +341,26 @@ namespace prAlarmMapWF
                                         new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
                                     var ToolTip = new GMapRoundedToolTip(marker)
                                     {
-                                        Fill = new SolidBrush(Color.LightGray),
                                         Foreground = new SolidBrush(Color.Black),
                                         TextPadding = new Size(5, 5),
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(50, -30);
+                                    if (Current[i].Color == 1)
+                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                    else if (Current[i].Color == 2)
+                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                    else if (Current[i].Color == 3)
+                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
+                                    ToolTip.Offset = new Point(30, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
                                     marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
+
+                                    break;
                                 }
                             }
 
@@ -298,18 +372,26 @@ namespace prAlarmMapWF
                                         new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
                                     var ToolTip = new GMapRoundedToolTip(marker)
                                     {
-                                        Fill = new SolidBrush(Color.LightGray),
                                         Foreground = new SolidBrush(Color.Black),
                                         TextPadding = new Size(5, 5),
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    ToolTip.Offset = new Point(-Current[i].AddrC.Length * 7, -50);
+                                    if (Current[i].Color == 1)
+                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                    else if (Current[i].Color == 2)
+                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                    else if (Current[i].Color == 3)
+                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
+                                    ToolTip.Offset = new Point(-Current[i].AddrC.Length * 8, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
                                     marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
+
+                                    break;
                                 }
                             }
 
@@ -321,18 +403,26 @@ namespace prAlarmMapWF
                                         new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
                                     var ToolTip = new GMapRoundedToolTip(marker)
                                     {
-                                        Fill = new SolidBrush(Color.LightGray),
                                         Foreground = new SolidBrush(Color.Black),
                                         TextPadding = new Size(5, 5),
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
+                                    if (Current[i].Color == 1)
+                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                    else if (Current[i].Color == 2)
+                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                    else if (Current[i].Color == 3)
+                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
                                     ToolTip.Offset = new Point(0, 10);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
                                     marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
+
+                                    break;
                                 }
                             }
 
@@ -344,18 +434,26 @@ namespace prAlarmMapWF
                                         new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
                                     var ToolTip = new GMapRoundedToolTip(marker)
                                     {
-                                        Fill = new SolidBrush(Color.LightGray),
                                         Foreground = new SolidBrush(Color.Black),
                                         TextPadding = new Size(5, 5),
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
+                                    if (Current[i].Color == 1)
+                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                    else if (Current[i].Color == 2)
+                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                    else if (Current[i].Color == 3)
+                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
                                     ToolTip.Offset = new Point(0, 10);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
                                     marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
+
+                                    break;
                                 }
                             }
 
@@ -367,18 +465,26 @@ namespace prAlarmMapWF
                                         new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
                                     var ToolTip = new GMapRoundedToolTip(marker)
                                     {
-                                        Fill = new SolidBrush(Color.LightGray),
                                         Foreground = new SolidBrush(Color.Black),
                                         TextPadding = new Size(5, 5),
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
+                                    if (Current[i].Color == 1)
+                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                    else if (Current[i].Color == 2)
+                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                    else if (Current[i].Color == 3)
+                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
                                     ToolTip.Offset = new Point(10, 0);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
                                     marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
+
+                                    break;
                                 }
                             }
 
@@ -390,18 +496,26 @@ namespace prAlarmMapWF
                                         new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
                                     var ToolTip = new GMapRoundedToolTip(marker)
                                     {
-                                        Fill = new SolidBrush(Color.LightGray),
                                         Foreground = new SolidBrush(Color.Black),
                                         TextPadding = new Size(5, 5),
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
+                                    if (Current[i].Color == 1)
+                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                    else if (Current[i].Color == 2)
+                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                    else if (Current[i].Color == 3)
+                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
                                     ToolTip.Offset = new Point(0, -10);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
                                     marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
+
+                                    break;
                                 }
                             }
 
@@ -413,18 +527,26 @@ namespace prAlarmMapWF
                                         new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
                                     var ToolTip = new GMapRoundedToolTip(marker)
                                     {
-                                        Fill = new SolidBrush(Color.LightGray),
                                         Foreground = new SolidBrush(Color.Black),
                                         TextPadding = new Size(5, 5),
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
+                                    if (Current[i].Color == 1)
+                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                    else if (Current[i].Color == 2)
+                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                    else if (Current[i].Color == 3)
+                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
                                     ToolTip.Offset = new Point(0, -10);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
                                     marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
+
+                                    break;
                                 }
                             }
 
@@ -436,18 +558,26 @@ namespace prAlarmMapWF
                                         new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
                                     var ToolTip = new GMapRoundedToolTip(marker)
                                     {
-                                        Fill = new SolidBrush(Color.LightGray),
                                         Foreground = new SolidBrush(Color.Black),
                                         TextPadding = new Size(5, 5),
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
+                                    if (Current[i].Color == 1)
+                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                    else if (Current[i].Color == 2)
+                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                    else if (Current[i].Color == 3)
+                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
                                     ToolTip.Offset = new Point(-Current[i].AddrC.Length * 7, 0);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
                                     marker.ToolTipText = Current[i].AddrRender;
                                     AlarmmarkersOverlay.Markers.Add(marker);
+
+                                    break;
                                 }
                             }
                         }
@@ -492,12 +622,18 @@ namespace prAlarmMapWF
                                         new PointLatLng(leftout, AlarmMap.ViewArea.Left), GMarkerGoogleType.red_small);
                             var ToolTip = new GMapRoundedToolTip(marker)
                             {
-                                Fill = new SolidBrush(Color.LightGray),
                                 Foreground = new SolidBrush(Color.Black),
                                 TextPadding = new Size(5, 5),
                                 //Offset = new Point(-100, 0),
                                 Stroke = Pens.Black,
                             };
+                            if (Current[i].Color == 1)
+                                ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                            else if (Current[i].Color == 2)
+                                ToolTip.Fill = new SolidBrush(Color.Yellow);
+                            else if (Current[i].Color == 3)
+                                ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
                             ToolTip.Offset = new Point(10, 0);
                             marker.ToolTip = ToolTip;
                             marker.ToolTipMode = MarkerTooltipMode.Always;
@@ -575,6 +711,34 @@ namespace prAlarmMapWF
 
                             //    AlarmmarkersOverlayp13.Markers.Add(marker1);
                             //}
+                        }
+                        if (pLong > 0)
+                        {
+                            GMapMarker marker = new GMarkerGoogle(
+                                       new PointLatLng(rightout, AlarmMap.ViewArea.Right), GMarkerGoogleType.red_small);
+                            var ToolTip = new GMapRoundedToolTip(marker)
+                            {
+                                Foreground = new SolidBrush(Color.Black),
+                                TextPadding = new Size(5, 5),
+                                //Offset = new Point(-100, 0),
+                                Stroke = Pens.Black,
+                            };
+                            if (Current[i].Color == 1)
+                                ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                            else if (Current[i].Color == 2)
+                                ToolTip.Fill = new SolidBrush(Color.Yellow);
+                            else if (Current[i].Color == 3)
+                                ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
+                            ToolTip.Offset = new Point(-Current[i].AddrC.Length*15, 0);
+                            marker.ToolTip = ToolTip;
+                            marker.ToolTipMode = MarkerTooltipMode.Always;
+                            marker.Size = new Size(2, 2);
+
+                            marker.ToolTipText = Current[i].AddrRender;
+                            AlarmmarkersOverlay.Markers.Add(marker);
+
+                            rightout -= delta;
                         }
 
 
@@ -688,7 +852,9 @@ namespace prAlarmMapWF
         private void Map_Work(object sender, DoWorkEventArgs e)
         {
             //int glMarCountCurr = 0;
-            
+
+            string city_1 = "г. Харьков,";
+            string city_2 = "г.Харьков,";
 
             while (!Program.EndWork)
             {                
@@ -721,23 +887,38 @@ namespace prAlarmMapWF
                             //tmp = cGeoLocDatas.Find
                             string tmp = dataPackagesCurrent[i].Tcentral + "  ";
                             tmp += dataPackagesCurrent[i].Time + "  ";
-                            tmp += cGeoLocData.AddrC;
+
+                            string stravoid = cGeoLocData.AddrC;
+
+                            int index = stravoid.IndexOf(city_1);
+                            if (index > -1)
+                                stravoid = stravoid.Substring(index + city_1.Length);
+                            else
+                            {
+                                index = stravoid.IndexOf(city_2);
+                                if (index > -1)
+                                    stravoid = stravoid.Substring(index + city_2.Length);
+                            }
+
+                            tmp += stravoid;
                             work.AddrRender = tmp;
                             work.AddrC = cGeoLocData.AddrC;
                             work.Latitude = cGeoLocData.Latitude;
                             work.Longitude = cGeoLocData.Longitude;
                             work.NCentral = dataPackagesCurrent[i].Tcentral;
                             work.Time = dataPackagesCurrent[i].Time;
+                            work.Color = dataPackagesCurrent[i].Color;
                             workGeoLocs.Add(work);
 
                             //geoLocNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
                         }
                         else
                         {
+                            bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr}");
                             if (onetime)
                             {
                                 CGeoLocData tmp = new CGeoLocData();
-                                tmp.AddrC = "Улица Деревянко 3";
+                                tmp.AddrRender = "Улица Деревянко 3";
                                 tmp.AddrM = "...";
                                 tmp.Latitude = 50.03690493334075;
                                 tmp.Longitude = 36.23892659172058;
@@ -789,16 +970,18 @@ namespace prAlarmMapWF
                     //cGD2.Longitude = 36.3585662841797;
                     //workGeoLocs.Add(cGD2);
                     //CGeoLocData cGD2d = new CGeoLocData();
+                    //cGD2d.AddrRender = "Test 1ч. ~ 45 с. Орелька";
                     //cGD2d.AddrC = "Test 1ч. ~ 45 с. Орелька";
                     //cGD2d.AddrM = "...";
-                    //cGD2d.Latitude = 50.0370762517441;
-                    //cGD2d.Longitude = 36.3585662841797;
+                    //cGD2d.Latitude = 50.1100107089601;
+                    //cGD2d.Longitude = 36.5741729736328;
                     //workGeoLocs.Add(cGD2d);
                     //CGeoLocData cGD2d1 = new CGeoLocData();
-                    //cGD2d1.AddrC = "Test 1ч. ~ 45 с. Орелька";
+                    //cGD2d1.AddrRender = "Test 1ч. ~ 45 г. Змиев, ул. Железнодорожная, 120";
+                    //cGD2d1.AddrC = "Test 1ч. < 45 с. Орелька";
                     //cGD2d1.AddrM = "...";
-                    //cGD2d1.Latitude = 50.0370762517441;
-                    //cGD2d1.Longitude = 36.3585662841797;
+                    //cGD2d1.Latitude = 49.8424107788092;
+                    //cGD2d1.Longitude = 36.5508270263672;
                     //workGeoLocs.Add(cGD2d1);
                     //CGeoLocData cGD3 = new CGeoLocData();
                     //cGD3.AddrC = "Test 2ч. ~ < 45 г. Змиев, ул. Железнодорожная, 120";

@@ -44,12 +44,13 @@ namespace prAlarmMapWF.DbServices
                 }
                 catch (SqlException ex)
                 {
-                    dbLog.Error(ex.Message);
+                    dbLog.Error(ex.Message + $" {ex.ErrorCode}");
+                    
                     return null;
                 }
                 catch (Exception ex)
                 {
-                    dbLog.Error(ex.Message);
+                    dbLog.Error(ex.Message );
                     return null;
                 }
 

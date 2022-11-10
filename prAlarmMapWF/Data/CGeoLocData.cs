@@ -15,6 +15,7 @@ namespace prAlarmMapWF.Data
         public string AddrC { get; set; }
         public string AddrRender { get; set; }
         public string AddrM { get; set; }
+        public byte Color { get; set; }
         
 
         #region IEquatable method

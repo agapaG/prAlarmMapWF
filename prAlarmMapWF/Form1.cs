@@ -434,7 +434,7 @@ namespace prAlarmMapWF
             AlarmMap.MinZoom = 12; //12 -> 7
 
             //Курсор мыши в центр карты
-            AlarmMap.MouseWheelZoomType = MouseWheelZoomType.MousePositionWithoutCenter;
+            AlarmMap.MouseWheelZoomType = MouseWheelZoomType.ViewCenter;
 
             //Отключение негативного режима
             AlarmMap.NegativeMode = false;
@@ -462,6 +462,8 @@ namespace prAlarmMapWF
 
             //При загрузке 13ти кратное увеличение
             AlarmMap.Zoom = 12.99;
+
+            AlarmMap.MouseWheel += AlarmMap_MouseWheel;
 
 
             /*
@@ -526,7 +528,13 @@ namespace prAlarmMapWF
             //textBox2.Text = AlarmMap.ViewArea.Left.ToString();   
 
         }
-        
+
+        private void AlarmMap_MouseWheel(object sender, MouseEventArgs e)
+        {
+            AlarmMap.Position = new PointLatLng(cPoint.Y, cPoint.X);
+            
+        }
+
         private void Map_FormClosing(object sender, FormClosingEventArgs e)
         {
             Program.EndWork = true;
@@ -538,6 +546,7 @@ namespace prAlarmMapWF
         private void AlarmMap_Scroll(object sender, ScrollEventArgs e)
         {
             AlarmMap.Position = new PointLatLng(cPoint.X, cPoint.Y);
+            MessageBox.Show($"{AlarmMap.ViewArea.Size.HeightLat}\n{AlarmMap.ViewArea.Size.WidthLng}");
         }
 
         private void AlarmMap_MouseClick(object sender, MouseEventArgs e)

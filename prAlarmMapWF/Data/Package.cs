@@ -8,6 +8,7 @@ namespace prAlarmMapWF.Data
         public string Tcentral { get; set; }
         public int Rec { get; set; }
         public string Time { get; set; }    
+        public byte Color { get; set; } 
 
         public List<n03> N03s { get; set; }
 
