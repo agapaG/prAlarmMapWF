@@ -17,7 +17,7 @@ namespace prAlarmMapWF.DbServices
         static string cnn = ConfigurationManager.ConnectionStrings["cnnStr"].ConnectionString;
         static string TblName = ConfigurationManager.AppSettings["TblName"];
 
-        public static ICollection<DataPackage> _getbuff_work(int Rec)
+        private static List<DataPackage> _getBuff()
         {
             List<DataPackage> rez = new List<DataPackage>();
 
@@ -30,7 +30,7 @@ namespace prAlarmMapWF.DbServices
                     mySql.Open();
                     cmd = mySql.CreateCommand();
                     cmd.Prepare();
-                    cmd.CommandText = $"select * from {TblName} where Rec > {Rec}";
+                    cmd.CommandText = $"select * from {TblName}";
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
@@ -40,10 +40,9 @@ namespace prAlarmMapWF.DbServices
                         tbl.Rec = reader.GetInt32(9);
                         tbl.Color = (byte)(reader.IsDBNull(11) ? 0x00 : reader.GetByte(11));
 
-
-                        tbl.N03s = Program.n03s.FindAll(item => Equals(item.Nb, tbl.Tcentral));
+                        //tbl.N03s = Program.n03s.FindAll(item => Equals(item.Nb, tbl.Tcentral));
                         
-                        if (tbl.N03s.Count != 0)   
+                        //if (tbl.N03s.Count != 0)   
                             rez.Add(tbl);
                     }
                 }
@@ -59,6 +58,66 @@ namespace prAlarmMapWF.DbServices
                 }
 
             }
+
+            return rez;
+        }
+        private static List<n03> _getn03(string nb)
+        {
+            List<n03> rez = new List<n03>();
+
+            string cnn = ConfigurationManager.ConnectionStrings["cnnStrno"].ConnectionString;
+
+            using (SqlConnection mySql = new SqlConnection(cnn))
+            {
+                SqlCommand cmd = null;
+
+                try
+                {
+                    mySql.Open();
+                    cmd = mySql.CreateCommand();
+                    cmd.Prepare();
+                    cmd.CommandText = $"select * from n03 ";
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        n03 tbln03 = new n03();
+                        tbln03.Id = reader.GetInt32(0);
+                        tbln03.Adr = reader.IsDBNull(2) ? null : reader.GetString(2);
+                        tbln03.Nb = reader.IsDBNull(13) ? null : reader.GetString(13);
+
+                        rez.Add(tbln03);
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    dbLog.Error(ex.Message + $" {ex.ErrorCode}");
+                    return null;
+                }
+                catch (Exception ex)
+                {
+                    dbLog.Error(ex.Message + $" {ex.HResult}");
+                    return null;
+                }
+
+            }
+
+
+            return rez;
+        }
+
+        public static List<DataPackage> GetDataPackages()
+        {
+            List<DataPackage> rez = new List<DataPackage>();
+
+            List<DataPackage> fromBuff = _getBuff();
+            if (fromBuff == null)
+                return null;
+
+            for (int i = 0; i < fromBuff.Count; ++i)
+            {
+
+            }
+
 
             return rez;
         }

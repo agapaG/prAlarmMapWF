@@ -739,7 +739,7 @@ namespace prAlarmMapWF
                 {
                     //**********************************************************************
 
-                    dataPackagesCurrent = (List<DataPackage>)ReadBuff_WTbl._getbuff_work(Program.nRec);
+                    dataPackagesCurrent = ReadBuff_WTbl.GetDataPackages();
 
                     for (int i = 0; i < dataPackagesCurrent.Count; i++)
                     {
