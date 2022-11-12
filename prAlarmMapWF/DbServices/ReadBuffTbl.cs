@@ -49,11 +49,13 @@ namespace prAlarmMapWF.DbServices
                 catch (SqlException ex)
                 {
                     dbLog.Error(ex.Message);
+                    mySql.Close();
                     return null;
                 }
                 catch (Exception ex)
                 {
                     dbLog.Error(ex.Message);
+                    mySql.Close();
                     return null;
                 }
 
@@ -76,7 +78,7 @@ namespace prAlarmMapWF.DbServices
                     mySql.Open();
                     cmd = mySql.CreateCommand();
                     cmd.Prepare();
-                    cmd.CommandText = $"select * from n03 ";
+                    cmd.CommandText = $"select * from n03 where nb = '{nb}'";
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
@@ -91,11 +93,13 @@ namespace prAlarmMapWF.DbServices
                 catch (SqlException ex)
                 {
                     dbLog.Error(ex.Message + $" {ex.ErrorCode}");
+                    mySql.Close();
                     return null;
                 }
                 catch (Exception ex)
                 {
                     dbLog.Error(ex.Message + $" {ex.HResult}");
+                    mySql.Close();
                     return null;
                 }
 
@@ -104,22 +108,72 @@ namespace prAlarmMapWF.DbServices
 
             return rez;
         }
+        
+        private static n04 _getn04(int id)
+        {
+            n04 rez = new n04();
+
+            string cnn = ConfigurationManager.ConnectionStrings["cnnStrno"].ConnectionString;
+
+            using (SqlConnection mySql = new SqlConnection(cnn))
+            {
+                SqlCommand cmd = null;
+
+                try
+                {
+                    mySql.Open();
+                    cmd = mySql.CreateCommand();
+                    cmd.Prepare();
+                    cmd.CommandText = $"select * from n04 where id = {id}";
+                    SqlDataReader reader = cmd.ExecuteReader(System.Data.CommandBehavior.SingleRow);
+                    if (reader.Read())
+                    {
+                        rez.Id = reader.GetInt32(0);
+                        rez.Status = reader.IsDBNull(7) ? null : reader.GetString(7);
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    dbLog.Error(ex.Message + $" {ex.ErrorCode}");
+                    mySql.Close();  
+
+                    return null;
+                }
+                catch (Exception ex)
+                {
+                    dbLog.Error(ex.Message);
+                    mySql.Close();
+                    return null;
+                }
+
+            }
+
+            return rez;
+        }
+
 
         public static List<DataPackage> GetDataPackages()
         {
-            List<DataPackage> rez = new List<DataPackage>();
-
             List<DataPackage> fromBuff = _getBuff();
             if (fromBuff == null)
                 return null;
 
             for (int i = 0; i < fromBuff.Count; ++i)
             {
-
+                List<n03> n03 = _getn03(fromBuff[i].Tcentral);
+                if (n03 == null)
+                    continue;
+                for (int j = 0; j < n03.Count; ++j)
+                {
+                    n04 n04r = _getn04(n03[j].Id);
+                    if (n04r != null)
+                        n03[j].Status = n04r.Status;
+                    else
+                        n03[j].Status = "None";
+                }
+                fromBuff[i].N03s = n03; 
             }
-
-
-            return rez;
+            return fromBuff;
         }
 
         public static int _get_rowscount()

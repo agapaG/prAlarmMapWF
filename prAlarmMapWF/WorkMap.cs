@@ -72,7 +72,7 @@ namespace prAlarmMapWF
               
         List<DataPackage> dataPackagesCurrent = null;
         List<CGeoLocData> workGeoLocs = new List<CGeoLocData>();
-        bool onetime = true;
+        //bool onetime = true;
 
         List<string> geoLocNames = new List<string>();
 
@@ -169,7 +169,7 @@ namespace prAlarmMapWF
                                             ToolTip.Fill = new SolidBrush(Color.LightGreen);
                                         
                                     }
-                                    else if (index > 0)
+                                    else if (index >= 0)
                                     {
                                         ToolTip.Fill = new SolidBrush(Color.LightGray);
                                     }
@@ -718,7 +718,7 @@ namespace prAlarmMapWF
             //Thread.Sleep(15);
             if (workGeoLocs.Count != 0)
                 workGeoLocs.Clear();
-            onetime = true;
+            //onetime = true;
             
             eventWait.Set();
 
@@ -730,6 +730,10 @@ namespace prAlarmMapWF
 
             string city_1 = "г. Харьков,";
             string city_2 = "г.Харьков,";
+            string ErrorMarker = "Улица Деревянко 3\n";
+            int count = 0;
+
+            //bool bFirstElimin = true;
 
             while (!Program.EndWork)
             {                
@@ -743,23 +747,21 @@ namespace prAlarmMapWF
 
                     for (int i = 0; i < dataPackagesCurrent.Count; i++)
                     {
-                        string strtmp = _addrParse(dataPackagesCurrent[i].N03s[0].Adr);
-
                         CGeoLocData cGeoLocData = new CGeoLocData();
-                        cGeoLocData = cGeoLocDatas.Find(item => item.AddrC.Equals(strtmp));
+                        cGeoLocData = cGeoLocDatas.Find(item => item.AddrC.Equals(dataPackagesCurrent[i].N03s[0].Adr));
                         if (cGeoLocData != null)
                         {
-                            var var1 = Program.n04s.Find(item => item.Id == dataPackagesCurrent[i].N03s[0].Id);
-                            if (var1 != null)
+                            if (dataPackagesCurrent[i].N03s[0].Status.Trim().Equals("Расторгнут"))
                             {
-                                if (var1.Status.Trim().Equals("Расторгнут"))
-                                    continue;
-                            }
-                            else
+                                bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr} Расторгнут");
                                 continue;
-
-                            CGeoLocData work = new CGeoLocData();
-                            //tmp = cGeoLocDatas.Find
+                            }
+                            else if (dataPackagesCurrent[i].N03s[0].Status.Equals("None"))
+                            {
+                                bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr} Отсутствует в таблице n04 ");
+                                continue;
+                            }
+                            
                             string tmp = dataPackagesCurrent[i].Tcentral + "  ";
                             tmp += dataPackagesCurrent[i].Time + "  ";
 
@@ -776,32 +778,47 @@ namespace prAlarmMapWF
                             }
 
                             tmp += stravoid;
-                            work.AddrRender = tmp;
-                            work.AddrC = cGeoLocData.AddrC;
-                            work.Latitude = cGeoLocData.Latitude;
-                            work.Longitude = cGeoLocData.Longitude;
-                            work.NCentral = dataPackagesCurrent[i].Tcentral;
-                            work.Time = dataPackagesCurrent[i].Time;
-                            work.Color = dataPackagesCurrent[i].Color;
-                            workGeoLocs.Add(work);
-
-                            //geoLocNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
+                            cGeoLocData.AddrRender = tmp;
+                            cGeoLocData.NCentral = dataPackagesCurrent[i].Tcentral;
+                            cGeoLocData.Time = dataPackagesCurrent[i].Time;
+                            cGeoLocData.Color = dataPackagesCurrent[i].Color;
+                            workGeoLocs.Add(cGeoLocData);
                         }
                         else
                         {
-                            bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr}");
-                            if (onetime)
+                            CGeoLocData tmp = new CGeoLocData();
+
+                            var itemToCorrect = workGeoLocs.SingleOrDefault(c => c.AddrC == "Error Marker");
+                            if (itemToCorrect != null)
                             {
-                                CGeoLocData tmp = new CGeoLocData();
-                                tmp.AddrRender = "Улица Деревянко 3";
+                                workGeoLocs.Remove(itemToCorrect);
+                                ErrorMarker += dataPackagesCurrent[i].Tcentral + " ";
+                                tmp.AddrRender = ErrorMarker;
+                                tmp.AddrC = "Error Marker";
                                 tmp.AddrM = "...";
                                 tmp.Latitude = 50.03690493334075;
                                 tmp.Longitude = 36.23892659172058;
 
+                                ++count;
+                                if (count > 5)
+                                {
+                                    count = 0;
+                                    ErrorMarker = "Улица Деревянко 3\n";
+                                }
                                 workGeoLocs.Add(tmp);
-
-                                onetime = false;
                             }
+                            else
+                            {
+                                ErrorMarker += dataPackagesCurrent[i].Tcentral + " ";
+                                tmp.AddrRender = ErrorMarker;
+                                tmp.AddrC = "Error Marker";
+                                tmp.AddrM = "...";
+                                tmp.Latitude = 50.03690493334075;
+                                tmp.Longitude = 36.23892659172058;
+                                                                
+                                workGeoLocs.Add(tmp);
+                            }
+
                         }
                     }
 

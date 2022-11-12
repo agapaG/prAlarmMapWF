@@ -12,7 +12,8 @@ namespace prAlarmMapWF.Data
     { 
         public int Id { get; set; } 
         public string Adr { get; set; }
-        public string Nb { get; set; }   
+        public string Nb { get; set; }
+        public string Status { get; set; }
     }
 
     public class n04
