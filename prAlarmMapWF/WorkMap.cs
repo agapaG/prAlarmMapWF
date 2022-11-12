@@ -50,6 +50,7 @@ namespace prAlarmMapWF
     public partial class Map : Form
     {
         Logger bloc = NLog.LogManager.GetLogger("LogBLoc");
+        Logger inf = NLog.LogManager.GetLogger("commonLog");
 
         EventWaitHandle eventWait;
         EventWaitHandle eventWaitProc;
@@ -74,7 +75,7 @@ namespace prAlarmMapWF
         List<CGeoLocData> workGeoLocs = new List<CGeoLocData>();
         //bool onetime = true;
 
-        List<string> geoLocNames = new List<string>();
+        List<string> geoLocBadNames = new List<string>();
 
         private void MapBgWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -84,6 +85,7 @@ namespace prAlarmMapWF
             MessageBox.Show("Завершение приложения...");
 
         }
+
         private void MapBgWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             //Очищаем список маркеров.
@@ -92,6 +94,7 @@ namespace prAlarmMapWF
 
             //workGeoLocs = workGeoLocs.Distinct().ToList();
             List<CGeoLocData> Current = workGeoLocs.DistinctBy(x => x.AddrC);
+
 
             double leftout = AlarmMap.ViewArea.Top - 0.0070515349659;
             double rightout = AlarmMap.ViewArea.Top - 0.0070515349659;
@@ -730,10 +733,10 @@ namespace prAlarmMapWF
 
             string city_1 = "г. Харьков,";
             string city_2 = "г.Харьков,";
-            string ErrorMarker = "Улица Деревянко 3\n";
-            int count = 0;
+            //string ErrorMarker = "Улица Деревянко 3\n";
+            //int count = 0;
 
-            //bool bFirstElimin = true;
+            bool bFirst = true;
 
             while (!Program.EndWork)
             {                
@@ -751,17 +754,29 @@ namespace prAlarmMapWF
                         cGeoLocData = cGeoLocDatas.Find(item => item.AddrC.Equals(dataPackagesCurrent[i].N03s[0].Adr));
                         if (cGeoLocData != null)
                         {
+                            //inf.Info($"{cGeoLocData.Color}Color");
                             if (dataPackagesCurrent[i].N03s[0].Status.Trim().Equals("Расторгнут"))
                             {
-                                bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr} Расторгнут");
+                                string fstr = geoLocBadNames.Find(s => Equals(s, dataPackagesCurrent[i].N03s[0].Adr));
+                                if (fstr == null)
+                                {
+                                    geoLocBadNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
+                                    bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr} Расторгнут");
+                                }
                                 continue;
                             }
                             else if (dataPackagesCurrent[i].N03s[0].Status.Equals("None"))
                             {
-                                bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr} Отсутствует в таблице n04 ");
+                                string fstr = geoLocBadNames.Find(s => Equals(s, dataPackagesCurrent[i].N03s[0].Adr));
+                                if (fstr == null)
+                                {
+                                    geoLocBadNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
+                                    bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr} Отсутствует в таблице n04 ");
+                                }
+                                
                                 continue;
                             }
-                            
+
                             string tmp = dataPackagesCurrent[i].Tcentral + "  ";
                             tmp += dataPackagesCurrent[i].Time + "  ";
 
@@ -786,38 +801,54 @@ namespace prAlarmMapWF
                         }
                         else
                         {
-                            CGeoLocData tmp = new CGeoLocData();
-
-                            var itemToCorrect = workGeoLocs.SingleOrDefault(c => c.AddrC == "Error Marker");
-                            if (itemToCorrect != null)
+                            if (bFirst)
                             {
-                                workGeoLocs.Remove(itemToCorrect);
-                                ErrorMarker += dataPackagesCurrent[i].Tcentral + " ";
-                                tmp.AddrRender = ErrorMarker;
-                                tmp.AddrC = "Error Marker";
-                                tmp.AddrM = "...";
-                                tmp.Latitude = 50.03690493334075;
-                                tmp.Longitude = 36.23892659172058;
-
-                                ++count;
-                                if (count > 5)
-                                {
-                                    count = 0;
-                                    ErrorMarker = "Улица Деревянко 3\n";
-                                }
-                                workGeoLocs.Add(tmp);
+                                geoLocBadNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
+                                bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr}");
+                                bFirst = false;
                             }
                             else
                             {
-                                ErrorMarker += dataPackagesCurrent[i].Tcentral + " ";
-                                tmp.AddrRender = ErrorMarker;
-                                tmp.AddrC = "Error Marker";
-                                tmp.AddrM = "...";
-                                tmp.Latitude = 50.03690493334075;
-                                tmp.Longitude = 36.23892659172058;
-                                                                
-                                workGeoLocs.Add(tmp);
+                                string fstr = geoLocBadNames.Find(s => Equals(s, dataPackagesCurrent[i].N03s[0].Adr));
+                                if (fstr == null)
+                                {
+                                    geoLocBadNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
+                                    bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr}");
+                                }
                             }
+
+                            //CGeoLocData tmp = new CGeoLocData();
+
+                            //var itemToCorrect = workGeoLocs.SingleOrDefault(c => c.AddrC == "Error Marker");
+                            //if (itemToCorrect != null)
+                            //{
+                            //    workGeoLocs.Remove(itemToCorrect);
+                            //    ErrorMarker += dataPackagesCurrent[i].Tcentral + " ";
+                            //    tmp.AddrRender = ErrorMarker;
+                            //    tmp.AddrC = "Error Marker";
+                            //    tmp.AddrM = "...";
+                            //    tmp.Latitude = 50.03690493334075;
+                            //    tmp.Longitude = 36.23892659172058;
+
+                            //    ++count;
+                            //    if (count > 5)
+                            //    {
+                            //        count = 0;
+                            //        ErrorMarker = "Улица Деревянко 3\n";
+                            //    }
+                            //    workGeoLocs.Add(tmp);
+                            //}
+                            //else
+                            //{
+                            //    ErrorMarker += dataPackagesCurrent[i].Tcentral + " ";
+                            //    tmp.AddrRender = ErrorMarker;
+                            //    tmp.AddrC = "Error Marker";
+                            //    tmp.AddrM = "...";
+                            //    tmp.Latitude = 50.03690493334075;
+                            //    tmp.Longitude = 36.23892659172058;
+
+                            //    workGeoLocs.Add(tmp);
+                            //}
 
                         }
                     }
@@ -1331,7 +1362,6 @@ namespace prAlarmMapWF
             //return bmp32;
 
         }
-
 
         private string _addrParse(string str)
         {

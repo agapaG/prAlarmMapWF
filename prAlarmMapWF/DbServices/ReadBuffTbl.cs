@@ -13,8 +13,11 @@ namespace prAlarmMapWF.DbServices
     internal class ReadBuff_WTbl
     {
         static Logger dbLog = NLog.LogManager.GetLogger("dbLog");
+        static Logger inf1 = NLog.LogManager.GetLogger("commonLog");
+
 
         static string cnn = ConfigurationManager.ConnectionStrings["cnnStr"].ConnectionString;
+        static string cnn0 = ConfigurationManager.ConnectionStrings["cnnStrno"].ConnectionString;
         static string TblName = ConfigurationManager.AppSettings["TblName"];
 
         private static List<DataPackage> _getBuff()
@@ -66,10 +69,8 @@ namespace prAlarmMapWF.DbServices
         private static List<n03> _getn03(string nb)
         {
             List<n03> rez = new List<n03>();
-
-            string cnn = ConfigurationManager.ConnectionStrings["cnnStrno"].ConnectionString;
-
-            using (SqlConnection mySql = new SqlConnection(cnn))
+            
+            using (SqlConnection mySql = new SqlConnection(cnn0))
             {
                 SqlCommand cmd = null;
 
@@ -87,6 +88,7 @@ namespace prAlarmMapWF.DbServices
                         tbln03.Adr = reader.IsDBNull(2) ? null : reader.GetString(2);
                         tbln03.Nb = reader.IsDBNull(13) ? null : reader.GetString(13);
 
+                        
                         rez.Add(tbln03);
                     }
                 }
@@ -105,17 +107,13 @@ namespace prAlarmMapWF.DbServices
 
             }
 
-
+            
             return rez;
-        }
-        
+        }      
         private static n04 _getn04(int id)
         {
             n04 rez = new n04();
-
-            string cnn = ConfigurationManager.ConnectionStrings["cnnStrno"].ConnectionString;
-
-            using (SqlConnection mySql = new SqlConnection(cnn))
+            using (SqlConnection mySql = new SqlConnection(cnn0))
             {
                 SqlCommand cmd = null;
 
@@ -131,6 +129,7 @@ namespace prAlarmMapWF.DbServices
                         rez.Id = reader.GetInt32(0);
                         rez.Status = reader.IsDBNull(7) ? null : reader.GetString(7);
                     }
+                    
                 }
                 catch (SqlException ex)
                 {
@@ -157,12 +156,14 @@ namespace prAlarmMapWF.DbServices
             List<DataPackage> fromBuff = _getBuff();
             if (fromBuff == null)
                 return null;
-
+                        
+            
             for (int i = 0; i < fromBuff.Count; ++i)
             {
                 List<n03> n03 = _getn03(fromBuff[i].Tcentral);
                 if (n03 == null)
                     continue;
+                
                 for (int j = 0; j < n03.Count; ++j)
                 {
                     n04 n04r = _getn04(n03[j].Id);
@@ -173,6 +174,7 @@ namespace prAlarmMapWF.DbServices
                 }
                 fromBuff[i].N03s = n03; 
             }
+
             return fromBuff;
         }
 

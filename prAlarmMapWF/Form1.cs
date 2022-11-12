@@ -53,7 +53,8 @@ namespace prAlarmMapWF
             //**************************************************************
            
             cGeoLocDatas = CGeoLocation._getGeoloc();
-           
+
+
             //**************************************************************
 
             #region Закулисье
@@ -412,6 +413,7 @@ namespace prAlarmMapWF
             //MessageBox.Show($"HeightLat {AlarmMap.ViewArea.HeightLat}");
 
             mapBgWorker.RunWorkerAsync();
+            
         }
 
         private void AlarmMap_Load(object sender, EventArgs e)
@@ -524,7 +526,7 @@ namespace prAlarmMapWF
 
             //textBox1.Text = AlarmMap.ViewArea.Top.ToString();
             //textBox2.Text = AlarmMap.ViewArea.Left.ToString();   
-
+            
         }
 
         private void AlarmMap_MouseWheel(object sender, MouseEventArgs e)
