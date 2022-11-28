@@ -32,9 +32,6 @@ namespace prAlarmMapWF
 
         BackgroundWorker mapBgWorker = null;
 
-        Logger cLog = NLog.LogManager.GetLogger("commonLog");
-
-
         public Map()
         {
             InitializeComponent();
@@ -407,10 +404,7 @@ namespace prAlarmMapWF
 
             AlarmMapViewAreaSizeHeightLat = AlarmMap.ViewArea.Size.HeightLat;
             AlarmMapViewAreaSizeWidthLng = AlarmMap.ViewArea.Size.WidthLng;
-            //cLog.Info($"Map_Load HeightLat: {AlarmMap.ViewArea.HeightLat}  WidthLng: {AlarmMap.ViewArea.WidthLng}");
-
-            //MessageBox.Show($"WidthLng {AlarmMap.ViewArea.WidthLng}");
-            //MessageBox.Show($"HeightLat {AlarmMap.ViewArea.HeightLat}");
+            
 
             mapBgWorker.RunWorkerAsync();
             

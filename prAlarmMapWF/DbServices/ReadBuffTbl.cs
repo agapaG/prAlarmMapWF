@@ -163,15 +163,7 @@ namespace prAlarmMapWF.DbServices
                 List<n03> n03 = _getn03(fromBuff[i].Tcentral);
                 if (n03 == null)
                     continue;
-                
-                for (int j = 0; j < n03.Count; ++j)
-                {
-                    n04 n04r = _getn04(n03[j].Id);
-                    if (n04r != null)
-                        n03[j].Status = n04r.Status;
-                    else
-                        n03[j].Status = "None";
-                }
+                                
                 fromBuff[i].N03s = n03; 
             }
 

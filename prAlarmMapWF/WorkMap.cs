@@ -50,7 +50,6 @@ namespace prAlarmMapWF
     public partial class Map : Form
     {
         Logger bloc = NLog.LogManager.GetLogger("LogBLoc");
-        Logger inf = NLog.LogManager.GetLogger("commonLog");
 
         EventWaitHandle eventWait;
         EventWaitHandle eventWaitProc;
@@ -750,221 +749,66 @@ namespace prAlarmMapWF
 
                     for (int i = 0; i < dataPackagesCurrent.Count; i++)
                     {
-                        CGeoLocData cGeoLocData = new CGeoLocData();
-                        cGeoLocData = cGeoLocDatas.Find(item => item.AddrC.Equals(dataPackagesCurrent[i].N03s[0].Adr));
-                        if (cGeoLocData != null)
+                        //for (int j = 0; j < dataPackagesCurrent[i].N03s.Count; ++j)
                         {
-                            //inf.Info($"{cGeoLocData.Color}Color");
-                            if (dataPackagesCurrent[i].N03s[0].Status.Trim().Equals("Закрыт"))
+                            CGeoLocData cGeoLocData = new CGeoLocData();
+                            cGeoLocData = cGeoLocDatas.Find(item => item.AddrC.Equals(dataPackagesCurrent[i].N03s[0].Adr));
+                            if (cGeoLocData != null)
                             {
-                                string fstr = geoLocBadNames.Find(s => Equals(s, dataPackagesCurrent[i].N03s[0].Adr));
-                                if (fstr == null)
+                                if (dataPackagesCurrent[i].N03s[0].Status.Trim().Equals("Закрыт"))
                                 {
-                                    geoLocBadNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
-                                    bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr} Расторгнут");
-                                }
-                                continue;
-                            }
-                            else if (dataPackagesCurrent[i].N03s[0].Status.Equals("None"))
-                            {
-                                string fstr = geoLocBadNames.Find(s => Equals(s, dataPackagesCurrent[i].N03s[0].Adr));
-                                if (fstr == null)
-                                {
-                                    geoLocBadNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
-                                    bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr} Отсутствует в таблице n04 ");
+                                    string fstr = geoLocBadNames.Find(s => Equals(s, dataPackagesCurrent[i].N03s[0].Adr));
+                                    if (fstr == null)
+                                    {
+                                        geoLocBadNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
+                                        bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr} Расторгнут");
+                                    }
+                                    continue;
                                 }
                                 
-                                continue;
-                            }
 
-                            string tmp = dataPackagesCurrent[i].Tcentral + "  ";
-                            tmp += dataPackagesCurrent[i].Time + "  ";
+                                string tmp = dataPackagesCurrent[i].Tcentral + "  ";
+                                tmp += dataPackagesCurrent[i].Time + "  ";
 
-                            string stravoid = cGeoLocData.AddrC;
+                                string stravoid = cGeoLocData.AddrC;
 
-                            int index = stravoid.IndexOf(city_1);
-                            if (index > -1)
-                                stravoid = stravoid.Substring(index + city_1.Length);
-                            else
-                            {
-                                index = stravoid.IndexOf(city_2);
+                                int index = stravoid.IndexOf(city_1);
                                 if (index > -1)
-                                    stravoid = stravoid.Substring(index + city_2.Length);
-                            }
+                                    stravoid = stravoid.Substring(index + city_1.Length);
+                                else
+                                {
+                                    index = stravoid.IndexOf(city_2);
+                                    if (index > -1)
+                                        stravoid = stravoid.Substring(index + city_2.Length);
+                                }
 
-                            tmp += stravoid;
-                            cGeoLocData.AddrRender = tmp;
-                            cGeoLocData.NCentral = dataPackagesCurrent[i].Tcentral;
-                            cGeoLocData.Time = dataPackagesCurrent[i].Time;
-                            cGeoLocData.Color = dataPackagesCurrent[i].Color;
-                            workGeoLocs.Add(cGeoLocData);
-                        }
-                        else
-                        {
-                            if (bFirst)
-                            {
-                                geoLocBadNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
-                                bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr}");
-                                bFirst = false;
+                                tmp += stravoid;
+                                cGeoLocData.AddrRender = tmp;
+                                cGeoLocData.NCentral = dataPackagesCurrent[i].Tcentral;
+                                cGeoLocData.Time = dataPackagesCurrent[i].Time;
+                                cGeoLocData.Color = dataPackagesCurrent[i].Color;
+                                workGeoLocs.Add(cGeoLocData);
                             }
                             else
                             {
-                                string fstr = geoLocBadNames.Find(s => Equals(s, dataPackagesCurrent[i].N03s[0].Adr));
-                                if (fstr == null)
+                                if (bFirst)
                                 {
                                     geoLocBadNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
                                     bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr}");
+                                    bFirst = false;
+                                }
+                                else
+                                {
+                                    string fstr = geoLocBadNames.Find(s => Equals(s, dataPackagesCurrent[i].N03s[0].Adr));
+                                    if (fstr == null)
+                                    {
+                                        geoLocBadNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
+                                        bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr}");
+                                    }
                                 }
                             }
-
-                            //CGeoLocData tmp = new CGeoLocData();
-
-                            //var itemToCorrect = workGeoLocs.SingleOrDefault(c => c.AddrC == "Error Marker");
-                            //if (itemToCorrect != null)
-                            //{
-                            //    workGeoLocs.Remove(itemToCorrect);
-                            //    ErrorMarker += dataPackagesCurrent[i].Tcentral + " ";
-                            //    tmp.AddrRender = ErrorMarker;
-                            //    tmp.AddrC = "Error Marker";
-                            //    tmp.AddrM = "...";
-                            //    tmp.Latitude = 50.03690493334075;
-                            //    tmp.Longitude = 36.23892659172058;
-
-                            //    ++count;
-                            //    if (count > 5)
-                            //    {
-                            //        count = 0;
-                            //        ErrorMarker = "Улица Деревянко 3\n";
-                            //    }
-                            //    workGeoLocs.Add(tmp);
-                            //}
-                            //else
-                            //{
-                            //    ErrorMarker += dataPackagesCurrent[i].Tcentral + " ";
-                            //    tmp.AddrRender = ErrorMarker;
-                            //    tmp.AddrC = "Error Marker";
-                            //    tmp.AddrM = "...";
-                            //    tmp.Latitude = 50.03690493334075;
-                            //    tmp.Longitude = 36.23892659172058;
-
-                            //    workGeoLocs.Add(tmp);
-                            //}
-
                         }
                     }
-
-                    //**********************************************************************
-
-                    //if (dataPackagesCurrent.Count != 0)
-                    //    Program.nRec = dataPackagesCurrent[dataPackagesCurrent.Count - 1].Rec;
-
-                    //**********************************************
-                    //точка для анализа
-                    //lat 49,899942109186
-                    //long 35,809936523
-                    //CGeoLocData cGD = new CGeoLocData();
-                    //cGD.AddrC = "Test 3ч. > 180 г. Харьков, пр. Науки, 9; 1 подъезд";
-                    //cGD.AddrM = "...";
-                    //cGD.Latitude = 50.0712436604447;
-                    //cGD.Longitude = 36.0447692871094;
-                    //workGeoLocs.Add(cGD);
-                    //CGeoLocData cGD1 = new CGeoLocData();
-                    //cGD1.AddrC = "Test 4ч. > 270 г. Харьков, пр. Гагарина, 72";
-                    //cGD1.AddrM = "...";
-                    //cGD1.Latitude = 49.9213881695726;
-                    //cGD1.Longitude = 36.4481735229492;
-                    //workGeoLocs.Add(cGD1);
-                    //CGeoLocData cGDm1 = new CGeoLocData();
-                    //cGDm1.AddrC = "Test 4ч. > 180 г. Харьков, пр. Науки, 9; 2 подъезд";
-                    //cGDm1.AddrM = "...";
-                    //cGDm1.Latitude = 49.9220512977633;
-                    //cGDm1.Longitude = 36.4217376708984;
-                    //workGeoLocs.Add(cGDm1);
-                    //CGeoLocData cGDm2 = new CGeoLocData();
-                    //cGDm2.AddrC = "Test 4ч. > 180 г. Харьков, пр. Науки, 9; 3 подъезд";
-                    //cGDm2.AddrM = "...";
-                    //cGDm2.Latitude = 49.9220512977633;
-                    //cGDm2.Longitude = 36.3980484008789;
-                    //workGeoLocs.Add(cGDm2);
-                    //CGeoLocData cGD2 = new CGeoLocData();
-                    //cGD2.AddrC = "Test 1ч. ~ 45 с. Орелька";
-                    //cGD2.AddrM = "...";
-                    //cGD2.Latitude = 50.0370762517441;
-                    //cGD2.Longitude = 36.3585662841797;
-                    //workGeoLocs.Add(cGD2);
-                    //CGeoLocData cGD2d = new CGeoLocData();
-                    //cGD2d.AddrRender = "Test 1ч. ~ 45 с. Орелька";
-                    //cGD2d.AddrC = "Test 1ч. ~ 45 с. Орелька";
-                    //cGD2d.AddrM = "...";
-                    //cGD2d.Latitude = 50.1100107089601;
-                    //cGD2d.Longitude = 36.5741729736328;
-                    //workGeoLocs.Add(cGD2d);
-                    //CGeoLocData cGD2d1 = new CGeoLocData();
-                    //cGD2d1.AddrRender = "Test 1ч. ~ 45 г. Змиев, ул. Железнодорожная, 120";
-                    //cGD2d1.AddrC = "Test 1ч. < 45 с. Орелька";
-                    //cGD2d1.AddrM = "...";
-                    //cGD2d1.Latitude = 49.8424107788092;
-                    //cGD2d1.Longitude = 36.5508270263672;
-                    //workGeoLocs.Add(cGD2d1);
-                    //CGeoLocData cGD3 = new CGeoLocData();
-                    //cGD3.AddrC = "Test 2ч. ~ < 45 г. Змиев, ул. Железнодорожная, 120";
-                    //cGD3.AddrM = "...";
-                    //cGD3.Latitude = 50.0721250780141;
-                    //cGD3.Longitude = 36.1079406738281;
-                    //workGeoLocs.Add(cGD3);
-
-
-                    /*
-                     * 3ч ~45
-                     * lat - 49,8344395004792
-                     * lon - 35,7735443115234
-                     * 
-                     * 3ч ~< 45
-                     * lat - 49,8295675167923
-                     * lon - 35,8367156982422
-                     * 
-                     * 3ч ~ > 45
-                     * lat - 49,9061337036433
-                     * lon - 35,7742309570313
-                     * 
-                     * 2ч ~45
-                     * lat - 50,142145942534
-                     * lon - 35,7893371582031
-                     * 
-                     * 2ч ~ < 45
-                     * lat - 50,1500663829863
-                     * lon - 35,8992004394531
-                     * 
-                     * 2ч ~ > 45
-                     * lat - 50,0672770808983
-                     * lon - 35,7735443115234
-                     * 
-                     * 1ч ~ 45
-                     * lat - 50,1100107089601
-                     * lon - 36,5741729736328
-                     * 
-                     * 1ч ~ < 45
-                     * lat - 50,019211345674 
-                     * lon - 36,5302276611328
-                     * 
-                     * 1ч ~ > 45
-                     * lat - 50,142145942534
-                     * lon - 36,4313507080078
-                     * 
-                     * 4ч ~ 45
-                     * lat - 49,8826899057189
-                     * lon - 36,5583801269531
-                     * 
-                     * 4ч ~ < 45
-                     * lat - 49,8424107788092
-                     * lon - 36,5508270263672
-                     * 
-                     * 4ч ~ > 45
-                     * lat - 49,9516617215233
-                     * lon - 36,5803527832031
-                     * 
-                    */
-
                     //***********************************************
                     mapBgWorker.ReportProgress(100);
                 }
