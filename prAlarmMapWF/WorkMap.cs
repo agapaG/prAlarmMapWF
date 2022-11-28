@@ -755,7 +755,7 @@ namespace prAlarmMapWF
                         if (cGeoLocData != null)
                         {
                             //inf.Info($"{cGeoLocData.Color}Color");
-                            if (dataPackagesCurrent[i].N03s[0].Status.Trim().Equals("Расторгнут"))
+                            if (dataPackagesCurrent[i].N03s[0].Status.Trim().Equals("Закрыт"))
                             {
                                 string fstr = geoLocBadNames.Find(s => Equals(s, dataPackagesCurrent[i].N03s[0].Adr));
                                 if (fstr == null)
