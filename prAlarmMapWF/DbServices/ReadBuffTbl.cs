@@ -102,46 +102,6 @@ namespace prAlarmMapWF.DbServices
             }      
             return rez;
         }      
-        private static n04 _getn04(int id)
-        {
-            n04 rez = new n04();
-            using (SqlConnection mySql = new SqlConnection(cnn0))
-            {
-                SqlCommand cmd = null;
-
-                try
-                {
-                    mySql.Open();
-                    cmd = mySql.CreateCommand();
-                    cmd.Prepare();
-                    cmd.CommandText = $"select * from n04 where id = {id}";
-                    SqlDataReader reader = cmd.ExecuteReader(System.Data.CommandBehavior.SingleRow);
-                    if (reader.Read())
-                    {
-                        rez.Id = reader.GetInt32(0);
-                        rez.Status = reader.IsDBNull(7) ? null : reader.GetString(7);
-                    }
-                    
-                }
-                catch (SqlException ex)
-                {
-                    dbLog.Error(ex.Message + $" {ex.ErrorCode}");
-                    mySql.Close();  
-
-                    return null;
-                }
-                catch (Exception ex)
-                {
-                    dbLog.Error(ex.Message);
-                    mySql.Close();
-                    return null;
-                }
-
-            }
-
-            return rez;
-        }
-
 
         public static List<DataPackage> GetDataPackages()
         {
