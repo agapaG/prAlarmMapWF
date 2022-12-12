@@ -97,7 +97,6 @@ namespace prAlarmMapWF
 
             double leftout = AlarmMap.ViewArea.Top - 0.0070515349659;
             double rightout = AlarmMap.ViewArea.Top - 0.0070515349659;
-            //double leftout = AlarmMapViewAreaSizeHeightLat - 0.0070515349659;
             double delta = 0.006;
             for (int i = 0; i < Current.Count; ++i)
             {                
@@ -588,7 +587,6 @@ namespace prAlarmMapWF
                     {                                                
                         if (pLong < 0)
                         {
-                            //AlarmMap.ViewArea.Size.HeightLat
                             GMapMarker marker = new GMarkerGoogle(
                                         new PointLatLng(leftout, AlarmMap.ViewArea.Left), GMarkerGoogleType.red_small);
                             var ToolTip = new GMapRoundedToolTip(marker)
@@ -615,73 +613,6 @@ namespace prAlarmMapWF
 
                             leftout -= delta;
 
-                            //double cnAlpha = pLong / Mod;
-                            //double Alpha = Math.Acos(cnAlpha) * (180.0 / Math.PI);
-
-                            //if ((180.0 - Alpha) < 35.0)
-                            //{
-                            //    Bitmap bmp8 = _createLeftMarker(Current[i].AddrC);
-
-                            //    GMapMarker marker1 = new GMarkerGoogle(
-                            //        new PointLatLng(cPoint.Y, cPoint.X), bmp8);
-
-                            //    marker1.Position = new PointLatLng(latLeft, lngLeft);
-
-                            //    AlarmmarkersOverlayp13.Markers.Add(marker1);
-
-                            //    //lngRight -= deltHeight1per25;
-
-                            //    //Bitmap bmp81 = _createLestDownMarker(workGeoLocs[i].AddrC);
-                            //    //GMapMarker marker11 = new GMarkerGoogle(
-                            //    //    new PointLatLng(cPoint.Y, cPoint.X), bmp81);
-
-                            //    //lngRight -= deltHeight1per15;
-                            //    ////lngRight = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0 + deltWidth1per20;
-
-                            //    //marker11.Position = new PointLatLng(latLeft, lngRight);
-
-                            //    //AlarmmarkersOverlayp13.Markers.Add(marker11);
-                            //    //Bitmap bmp81 = _createLeftMarker(workGeoLocs[i].AddrC + "1");
-
-                            //    //latLeft -= deltHeight1per15;
-                            //    //lngRight = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0
-                            //    //    + deltWidth1per20;
-
-
-                            //    //GMapMarker marker2 = new GMarkerGoogle(
-                            //    //    new PointLatLng(cPoint.Y, cPoint.X), bmp81);
-
-                            //    //marker2.Position = new PointLatLng(latLeft, lngRight);
-                            //    //AlarmmarkersOverlayp13.Markers.Add(marker2);
-
-                            //}
-                            //if ((180.0 - Alpha) > 55.0)
-                            //{
-                            //    Bitmap bmp8 = _createLeftDownMarker(Current[i].AddrC);
-                            //    GMapMarker marker1 = new GMarkerGoogle(
-                            //        new PointLatLng(cPoint.Y, cPoint.X), bmp8);
-
-                            //    latLeft -= deltHeight1per15;
-                            //    lngLeft = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0 + deltWidth1per20;
-
-                            //    marker1.Position = new PointLatLng(latLeft, lngLeft);
-
-                            //    AlarmmarkersOverlayp13.Markers.Add(marker1);
-                            //}
-
-                            //if ((180.0 - Alpha) < 55.0 && (180.0 - Alpha) > 36.0)
-                            //{
-                            //    Bitmap bmp8 = _createLeftDown45LMarker(Current[i].AddrC);
-                            //    GMapMarker marker1 = new GMarkerGoogle(
-                            //        new PointLatLng(cPoint.Y, cPoint.X), bmp8);
-
-                            //    latLeft -= deltHeight1per15;
-                            //    lngLeft = cPoint.X - AlarmMap.ViewArea.Size.WidthLng / 2.0 + deltWidth1per20;
-
-                            //    marker1.Position = new PointLatLng(latLeft, lngLeft);
-
-                            //    AlarmmarkersOverlayp13.Markers.Add(marker1);
-                            //}
                         }
                         if (pLong > 0)
                         {
