@@ -99,10 +99,7 @@ namespace prAlarmMapWF.DbServices
                     mySql.Close();
                     return null;
                 }
-
-            }
-
-            
+            }      
             return rez;
         }      
         private static n04 _getn04(int id)

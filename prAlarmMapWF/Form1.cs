@@ -542,20 +542,5 @@ namespace prAlarmMapWF
             AlarmMap.Position = new PointLatLng(cPoint.X, cPoint.Y);
             MessageBox.Show($"{AlarmMap.ViewArea.Size.HeightLat}\n{AlarmMap.ViewArea.Size.WidthLng}");
         }
-
-        private void AlarmMap_MouseClick(object sender, MouseEventArgs e)
-        {
-            tLan.Text = AlarmMap.FromLocalToLatLng(e.X,e.Y).Lat.ToString();
-            tLng.Text = AlarmMap.FromLocalToLatLng(e.X, e.Y).Lng .ToString();   
-        }
-
-        private void bSize_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show($"Top {AlarmMap.ViewArea.Top} Left {AlarmMap.ViewArea.Left}\n" +
-                $"Right {AlarmMap.ViewArea.Right} Bottom {AlarmMap.ViewArea.Bottom}\n" +
-                $"{AlarmMap.ViewArea.Size}"
-                );
-            
-        }
     }
 }
