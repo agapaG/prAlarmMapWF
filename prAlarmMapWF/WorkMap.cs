@@ -51,6 +51,7 @@ namespace prAlarmMapWF
     {
         Logger bloc = NLog.LogManager.GetLogger("LogBLoc");
 
+
         EventWaitHandle eventWait;
         EventWaitHandle eventWaitProc;
 
@@ -72,7 +73,6 @@ namespace prAlarmMapWF
               
         List<DataPackage> dataPackagesCurrent = null;
         List<CGeoLocData> workGeoLocs = new List<CGeoLocData>();
-        //bool onetime = true;
 
         List<string> geoLocBadNames = new List<string>();
 
@@ -728,12 +728,10 @@ namespace prAlarmMapWF
 
         private void Map_Work(object sender, DoWorkEventArgs e)
         {
-            //int glMarCountCurr = 0;
 
             string city_1 = "г. Харьков,";
             string city_2 = "г.Харьков,";
-            //string ErrorMarker = "Улица Деревянко 3\n";
-            //int count = 0;
+            
 
             bool bFirst = true;
 
@@ -744,67 +742,61 @@ namespace prAlarmMapWF
                 try
                 {
                     //**********************************************************************
-
                     dataPackagesCurrent = ReadBuff_WTbl.GetDataPackages();
 
                     for (int i = 0; i < dataPackagesCurrent.Count; i++)
-                    {
-                        //for (int j = 0; j < dataPackagesCurrent[i].N03s.Count; ++j)
+                    {                        
+                        CGeoLocData cGeoLocData = new CGeoLocData();
+                        cGeoLocData = cGeoLocDatas.Find(item => item.AddrC.Equals(dataPackagesCurrent[i].N03s[0].Adr));
+                        if (cGeoLocData != null)
                         {
-                            CGeoLocData cGeoLocData = new CGeoLocData();
-                            cGeoLocData = cGeoLocDatas.Find(item => item.AddrC.Equals(dataPackagesCurrent[i].N03s[0].Adr));
-                            if (cGeoLocData != null)
+                            if (dataPackagesCurrent[i].N03s[0].Status.Trim().Equals("Закрыт"))
                             {
-                                if (dataPackagesCurrent[i].N03s[0].Status.Trim().Equals("Закрыт"))
+                                string fstr = geoLocBadNames.Find(s => Equals(s, dataPackagesCurrent[i].N03s[0].Adr));
+                                if (fstr == null)
                                 {
-                                    string fstr = geoLocBadNames.Find(s => Equals(s, dataPackagesCurrent[i].N03s[0].Adr));
-                                    if (fstr == null)
-                                    {
-                                        geoLocBadNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
-                                        bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr} Расторгнут");
-                                    }
-                                    continue;
+                                    geoLocBadNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
+                                    bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr} Расторгнут");
                                 }
-                                
+                                continue;
+                            }
 
-                                string tmp = dataPackagesCurrent[i].Tcentral + "  ";
-                                tmp += dataPackagesCurrent[i].Time + "  ";
+                            string tmp = dataPackagesCurrent[i].Tcentral + "  ";
+                            tmp += dataPackagesCurrent[i].Time + "  ";
 
-                                string stravoid = cGeoLocData.AddrC;
+                            string stravoid = cGeoLocData.AddrC;
 
-                                int index = stravoid.IndexOf(city_1);
+                            int index = stravoid.IndexOf(city_1);
+                            if (index > -1)
+                                stravoid = stravoid.Substring(index + city_1.Length);
+                            else
+                            {
+                                index = stravoid.IndexOf(city_2);
                                 if (index > -1)
-                                    stravoid = stravoid.Substring(index + city_1.Length);
-                                else
-                                {
-                                    index = stravoid.IndexOf(city_2);
-                                    if (index > -1)
-                                        stravoid = stravoid.Substring(index + city_2.Length);
-                                }
-
-                                tmp += stravoid;
-                                cGeoLocData.AddrRender = tmp;
-                                cGeoLocData.NCentral = dataPackagesCurrent[i].Tcentral;
-                                cGeoLocData.Time = dataPackagesCurrent[i].Time;
-                                cGeoLocData.Color = dataPackagesCurrent[i].Color;
-                                workGeoLocs.Add(cGeoLocData);
+                                    stravoid = stravoid.Substring(index + city_2.Length);
+                            }
+                            tmp += stravoid;
+                            cGeoLocData.AddrRender = tmp;
+                            cGeoLocData.NCentral = dataPackagesCurrent[i].Tcentral;
+                            cGeoLocData.Time = dataPackagesCurrent[i].Time;
+                            cGeoLocData.Color = dataPackagesCurrent[i].Color;
+                            workGeoLocs.Add(cGeoLocData);
+                        }
+                        else
+                        {
+                            if (bFirst)
+                            {
+                                geoLocBadNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
+                                bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr}");
+                                bFirst = false;
                             }
                             else
                             {
-                                if (bFirst)
+                                string fstr = geoLocBadNames.Find(s => Equals(s, dataPackagesCurrent[i].N03s[0].Adr));
+                                if (fstr == null)
                                 {
                                     geoLocBadNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
                                     bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr}");
-                                    bFirst = false;
-                                }
-                                else
-                                {
-                                    string fstr = geoLocBadNames.Find(s => Equals(s, dataPackagesCurrent[i].N03s[0].Adr));
-                                    if (fstr == null)
-                                    {
-                                        geoLocBadNames.Add(dataPackagesCurrent[i].N03s[0].Adr);
-                                        bloc.Info($"{dataPackagesCurrent[i].Tcentral} {dataPackagesCurrent[i].N03s[0].Adr}");
-                                    }
                                 }
                             }
                         }

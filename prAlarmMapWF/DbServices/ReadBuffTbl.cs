@@ -13,8 +13,6 @@ namespace prAlarmMapWF.DbServices
     internal class ReadBuff_WTbl
     {
         static Logger dbLog = NLog.LogManager.GetLogger("dbLog");
-        static Logger inf1 = NLog.LogManager.GetLogger("commonLog");
-
 
         static string cnn = ConfigurationManager.ConnectionStrings["cnnStr"].ConnectionString;
         static string cnn0 = ConfigurationManager.ConnectionStrings["cnnStrno"].ConnectionString;
@@ -42,11 +40,8 @@ namespace prAlarmMapWF.DbServices
                         tbl.Time = reader.IsDBNull(8) ? null : reader.GetDateTime(8).ToString();
                         tbl.Rec = reader.GetInt32(9);
                         tbl.Color = (byte)(reader.IsDBNull(11) ? 0x00 : reader.GetByte(11));
-
-                        //tbl.N03s = Program.n03s.FindAll(item => Equals(item.Nb, tbl.Tcentral));
-                        
-                        //if (tbl.N03s.Count != 0)   
-                            rez.Add(tbl);
+                                              
+                        rez.Add(tbl);
                     }
                 }
                 catch (SqlException ex)
@@ -87,8 +82,8 @@ namespace prAlarmMapWF.DbServices
                         tbln03.Id = reader.GetInt32(0);
                         tbln03.Adr = reader.IsDBNull(2) ? null : reader.GetString(2);
                         tbln03.Nb = reader.IsDBNull(13) ? null : reader.GetString(13);
+                        tbln03.Status = reader.IsDBNull(14) ? null : reader.GetString(14);  
 
-                        
                         rez.Add(tbln03);
                     }
                 }
@@ -166,7 +161,6 @@ namespace prAlarmMapWF.DbServices
                                 
                 fromBuff[i].N03s = n03; 
             }
-
             return fromBuff;
         }
 
