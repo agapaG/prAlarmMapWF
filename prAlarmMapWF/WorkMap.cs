@@ -126,14 +126,23 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    if (Current[i].Color == 1)
-                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
-                                    else if (Current[i].Color == 2) 
-                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
-                                    else if (Current[i].Color == 3)
-                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
 
-                                    ToolTip.Offset = new Point(-Current[i].AddrC.Length * 8, -30);
+                                    if (Current[i].Closed)
+                                    {
+                                        ToolTip.Fill = new SolidBrush(Color.LightGray);
+                                    }
+                                    else
+                                    {
+                                        if (Current[i].Color == 1)
+                                            ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                        else if (Current[i].Color == 2)
+                                            ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                        else if (Current[i].Color == 3)
+                                            ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                    }
+
+                                    //ToolTip.Offset = new Point(-Current[i].AddrC.Length * 8, -30);
+                                    ToolTip.Offset = new Point(-Current[i].AddrRender.Length * 8, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
@@ -158,53 +167,60 @@ namespace prAlarmMapWF
                                         Stroke = Pens.Black,
                                     };
 
-                                    int index = Current[i].AddrRender.IndexOf("Улица Деревянко");
-                                    if (index < 0)
+                                    if (Current[i].Closed)
                                     {
-                                      
+                                        ToolTip.Fill = new SolidBrush(Color.LightGray);
+                                    }
+                                    else
+                                    {
                                         if (Current[i].Color == 1)
                                             ToolTip.Fill = new SolidBrush(Color.OrangeRed);
                                         else if (Current[i].Color == 2)
                                             ToolTip.Fill = new SolidBrush(Color.Yellow);
                                         else if (Current[i].Color == 3)
                                             ToolTip.Fill = new SolidBrush(Color.LightGreen);
-                                        
                                     }
-                                    else if (index >= 0)
+
+
+                                    ToolTip.Offset = new Point(30, -30);
+                                    marker.ToolTip = ToolTip;
+                                    marker.ToolTipMode = MarkerTooltipMode.Always;
+
+                                    marker.ToolTipText = Current[i].AddrRender;
+
+                                    AlarmmarkersOverlay.Markers.Add(marker);
+                                    break;
+                                }
+                            }
+
+                            if (AlarmmpolyOverlaySec.Polygons[k].Name.Equals("polyFourth"))
+                            {
+                                if (AlarmmpolyOverlaySec.Polygons[k].IsInside(currenyPoint))
+                                {
+                                    GMapMarker marker = new GMarkerGoogle(
+                                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
+                                    var ToolTip = new GMapRoundedToolTip(marker)
+                                    {
+                                        Foreground = new SolidBrush(Color.Black),
+                                        TextPadding = new Size(5, 5),
+                                        //Offset = new Point(-100, 0),
+                                        Stroke = Pens.Black,
+                                    };
+                                    
+                                    if (Current[i].Closed)
                                     {
                                         ToolTip.Fill = new SolidBrush(Color.LightGray);
                                     }
-
-                                    ToolTip.Offset = new Point(30, -30);
-                                    marker.ToolTip = ToolTip;
-                                    marker.ToolTipMode = MarkerTooltipMode.Always;
-
-                                    marker.ToolTipText = Current[i].AddrRender;
-
-                                    AlarmmarkersOverlay.Markers.Add(marker);
-                                    break;
-                                }
-                            }
-
-                            if (AlarmmpolyOverlaySec.Polygons[k].Name.Equals("polyFourth"))
-                            {
-                                if (AlarmmpolyOverlaySec.Polygons[k].IsInside(currenyPoint))
-                                {
-                                    GMapMarker marker = new GMarkerGoogle(
-                                        new PointLatLng(Current[i].Latitude, Current[i].Longitude), GMarkerGoogleType.red_small);
-                                    var ToolTip = new GMapRoundedToolTip(marker)
+                                    else
                                     {
-                                        Foreground = new SolidBrush(Color.Black),
-                                        TextPadding = new Size(5, 5),
-                                        //Offset = new Point(-100, 0),
-                                        Stroke = Pens.Black,
-                                    };
-                                    if (Current[i].Color == 1)
-                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
-                                    else if (Current[i].Color == 2)
-                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
-                                    else if (Current[i].Color == 3)
-                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                        if (Current[i].Color == 1)
+                                            ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                        else if (Current[i].Color == 2)
+                                            ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                        else if (Current[i].Color == 3)
+                                            ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                    }
+
                                     ToolTip.Offset = new Point(30, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
@@ -228,12 +244,21 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    if (Current[i].Color == 1)
-                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
-                                    else if (Current[i].Color == 2)
-                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
-                                    else if (Current[i].Color == 3)
-                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                    
+                                    if (Current[i].Closed)
+                                    {
+                                        ToolTip.Fill = new SolidBrush(Color.LightGray);
+                                    }
+                                    else
+                                    {
+                                        if (Current[i].Color == 1)
+                                            ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                        else if (Current[i].Color == 2)
+                                            ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                        else if (Current[i].Color == 3)
+                                            ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                    }
+
                                     ToolTip.Offset = new Point(30, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
@@ -257,12 +282,20 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    if (Current[i].Color == 1)
-                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
-                                    else if (Current[i].Color == 2)
-                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
-                                    else if (Current[i].Color == 3)
-                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                    
+                                    if (Current[i].Closed)
+                                    {
+                                        ToolTip.Fill = new SolidBrush(Color.LightGray);
+                                    }
+                                    else
+                                    {
+                                        if (Current[i].Color == 1)
+                                            ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                        else if (Current[i].Color == 2)
+                                            ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                        else if (Current[i].Color == 3)
+                                            ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                    }
 
                                     ToolTip.Offset = new Point(30, -30);
                                     marker.ToolTip = ToolTip;
@@ -287,12 +320,20 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    if (Current[i].Color == 1)
-                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
-                                    else if (Current[i].Color == 2)
-                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
-                                    else if (Current[i].Color == 3)
-                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
+                                    if (Current[i].Closed)
+                                    {
+                                        ToolTip.Fill = new SolidBrush(Color.LightGray);
+                                    }
+                                    else
+                                    {
+                                        if (Current[i].Color == 1)
+                                            ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                        else if (Current[i].Color == 2)
+                                            ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                        else if (Current[i].Color == 3)
+                                            ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                    }
 
                                     ToolTip.Offset = new Point(30, -30);
                                     marker.ToolTip = ToolTip;
@@ -317,12 +358,20 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    if (Current[i].Color == 1)
-                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
-                                    else if (Current[i].Color == 2)
-                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
-                                    else if (Current[i].Color == 3)
-                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
+                                    if (Current[i].Closed)
+                                    {
+                                        ToolTip.Fill = new SolidBrush(Color.LightGray);
+                                    }
+                                    else
+                                    {
+                                        if (Current[i].Color == 1)
+                                            ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                        else if (Current[i].Color == 2)
+                                            ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                        else if (Current[i].Color == 3)
+                                            ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                    }
 
                                     ToolTip.Offset = new Point(30, -30);
                                     marker.ToolTip = ToolTip;
@@ -347,12 +396,20 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    if (Current[i].Color == 1)
-                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
-                                    else if (Current[i].Color == 2)
-                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
-                                    else if (Current[i].Color == 3)
-                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
+                                    if (Current[i].Closed)
+                                    {
+                                        ToolTip.Fill = new SolidBrush(Color.LightGray);
+                                    }
+                                    else
+                                    {
+                                        if (Current[i].Color == 1)
+                                            ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                        else if (Current[i].Color == 2)
+                                            ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                        else if (Current[i].Color == 3)
+                                            ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                    }
 
                                     ToolTip.Offset = new Point(30, -30);
                                     marker.ToolTip = ToolTip;
@@ -378,14 +435,23 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    if (Current[i].Color == 1)
-                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
-                                    else if (Current[i].Color == 2)
-                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
-                                    else if (Current[i].Color == 3)
-                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
 
-                                    ToolTip.Offset = new Point(-Current[i].AddrC.Length * 8, -30);
+                                    if (Current[i].Closed)
+                                    {
+                                        ToolTip.Fill = new SolidBrush(Color.LightGray);
+                                    }
+                                    else
+                                    {
+                                        if (Current[i].Color == 1)
+                                            ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                        else if (Current[i].Color == 2)
+                                            ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                        else if (Current[i].Color == 3)
+                                            ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                    }
+
+                                    //ToolTip.Offset = new Point(-Current[i].AddrC.Length * 8, -30);
+                                    ToolTip.Offset = new Point(-Current[i].AddrRender.Length * 8, -30);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
@@ -409,12 +475,20 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    if (Current[i].Color == 1)
-                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
-                                    else if (Current[i].Color == 2)
-                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
-                                    else if (Current[i].Color == 3)
-                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
+                                    if (Current[i].Closed)
+                                    {
+                                        ToolTip.Fill = new SolidBrush(Color.LightGray);
+                                    }
+                                    else
+                                    {
+                                        if (Current[i].Color == 1)
+                                            ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                        else if (Current[i].Color == 2)
+                                            ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                        else if (Current[i].Color == 3)
+                                            ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                    }
 
                                     ToolTip.Offset = new Point(0, 10);
                                     marker.ToolTip = ToolTip;
@@ -440,12 +514,20 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    if (Current[i].Color == 1)
-                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
-                                    else if (Current[i].Color == 2)
-                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
-                                    else if (Current[i].Color == 3)
-                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
+                                    if (Current[i].Closed)
+                                    {
+                                        ToolTip.Fill = new SolidBrush(Color.LightGray);
+                                    }
+                                    else
+                                    {
+                                        if (Current[i].Color == 1)
+                                            ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                        else if (Current[i].Color == 2)
+                                            ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                        else if (Current[i].Color == 3)
+                                            ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                    }
 
                                     ToolTip.Offset = new Point(0, 10);
                                     marker.ToolTip = ToolTip;
@@ -471,12 +553,20 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    if (Current[i].Color == 1)
-                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
-                                    else if (Current[i].Color == 2)
-                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
-                                    else if (Current[i].Color == 3)
-                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
+                                    if (Current[i].Closed)
+                                    {
+                                        ToolTip.Fill = new SolidBrush(Color.LightGray);
+                                    }
+                                    else
+                                    {
+                                        if (Current[i].Color == 1)
+                                            ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                        else if (Current[i].Color == 2)
+                                            ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                        else if (Current[i].Color == 3)
+                                            ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                    }
 
                                     ToolTip.Offset = new Point(10, 0);
                                     marker.ToolTip = ToolTip;
@@ -502,12 +592,20 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    if (Current[i].Color == 1)
-                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
-                                    else if (Current[i].Color == 2)
-                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
-                                    else if (Current[i].Color == 3)
-                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
+                                    if (Current[i].Closed)
+                                    {
+                                        ToolTip.Fill = new SolidBrush(Color.LightGray);
+                                    }
+                                    else
+                                    {
+                                        if (Current[i].Color == 1)
+                                            ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                        else if (Current[i].Color == 2)
+                                            ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                        else if (Current[i].Color == 3)
+                                            ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                    }
 
                                     ToolTip.Offset = new Point(0, -10);
                                     marker.ToolTip = ToolTip;
@@ -533,12 +631,20 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    if (Current[i].Color == 1)
-                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
-                                    else if (Current[i].Color == 2)
-                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
-                                    else if (Current[i].Color == 3)
-                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
+                                    if (Current[i].Closed)
+                                    {
+                                        ToolTip.Fill = new SolidBrush(Color.LightGray);
+                                    }
+                                    else
+                                    {
+                                        if (Current[i].Color == 1)
+                                            ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                        else if (Current[i].Color == 2)
+                                            ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                        else if (Current[i].Color == 3)
+                                            ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                    }
 
                                     ToolTip.Offset = new Point(0, -10);
                                     marker.ToolTip = ToolTip;
@@ -564,14 +670,23 @@ namespace prAlarmMapWF
                                         //Offset = new Point(-100, 0),
                                         Stroke = Pens.Black,
                                     };
-                                    if (Current[i].Color == 1)
-                                        ToolTip.Fill = new SolidBrush(Color.OrangeRed);
-                                    else if (Current[i].Color == 2)
-                                        ToolTip.Fill = new SolidBrush(Color.Yellow);
-                                    else if (Current[i].Color == 3)
-                                        ToolTip.Fill = new SolidBrush(Color.LightGreen);
 
-                                    ToolTip.Offset = new Point(-Current[i].AddrC.Length * 7, 0);
+                                    if (Current[i].Closed)
+                                    {
+                                        ToolTip.Fill = new SolidBrush(Color.LightGray);
+                                    }
+                                    else
+                                    {
+                                        if (Current[i].Color == 1)
+                                            ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                        else if (Current[i].Color == 2)
+                                            ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                        else if (Current[i].Color == 3)
+                                            ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                                    }
+
+                                    //ToolTip.Offset = new Point(-Current[i].AddrC.Length * 7, 0);
+                                    ToolTip.Offset = new Point(-Current[i].AddrRender.Length * 7, 0);
                                     marker.ToolTip = ToolTip;
                                     marker.ToolTipMode = MarkerTooltipMode.Always;
 
@@ -596,12 +711,20 @@ namespace prAlarmMapWF
                                 //Offset = new Point(-100, 0),
                                 Stroke = Pens.Black,
                             };
-                            if (Current[i].Color == 1)
-                                ToolTip.Fill = new SolidBrush(Color.OrangeRed);
-                            else if (Current[i].Color == 2)
-                                ToolTip.Fill = new SolidBrush(Color.Yellow);
-                            else if (Current[i].Color == 3)
-                                ToolTip.Fill = new SolidBrush(Color.LightGreen);
+
+                            if (Current[i].Closed)
+                            {
+                                ToolTip.Fill = new SolidBrush(Color.LightGray);
+                            }
+                            else
+                            {
+                                if (Current[i].Color == 1)
+                                    ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                else if (Current[i].Color == 2)
+                                    ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                else if (Current[i].Color == 3)
+                                    ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                            }
 
                             ToolTip.Offset = new Point(10, 0);
                             marker.ToolTip = ToolTip;
@@ -625,14 +748,23 @@ namespace prAlarmMapWF
                                 //Offset = new Point(-100, 0),
                                 Stroke = Pens.Black,
                             };
-                            if (Current[i].Color == 1)
-                                ToolTip.Fill = new SolidBrush(Color.OrangeRed);
-                            else if (Current[i].Color == 2)
-                                ToolTip.Fill = new SolidBrush(Color.Yellow);
-                            else if (Current[i].Color == 3)
-                                ToolTip.Fill = new SolidBrush(Color.LightGreen);
 
-                            ToolTip.Offset = new Point(-Current[i].AddrC.Length*15, 0);
+                            if (Current[i].Closed)
+                            {
+                                ToolTip.Fill = new SolidBrush(Color.LightGray);
+                            }
+                            else
+                            {
+                                if (Current[i].Color == 1)
+                                    ToolTip.Fill = new SolidBrush(Color.OrangeRed);
+                                else if (Current[i].Color == 2)
+                                    ToolTip.Fill = new SolidBrush(Color.Yellow);
+                                else if (Current[i].Color == 3)
+                                    ToolTip.Fill = new SolidBrush(Color.LightGreen);
+                            }
+
+                            //ToolTip.Offset = new Point(-Current[i].AddrC.Length*15, 0);
+                            ToolTip.Offset = new Point(-Current[i].AddrRender.Length * 15, 0);
                             marker.ToolTip = ToolTip;
                             marker.ToolTipMode = MarkerTooltipMode.Always;
                             marker.Size = new Size(2, 2);
@@ -659,11 +791,9 @@ namespace prAlarmMapWF
 
         private void Map_Work(object sender, DoWorkEventArgs e)
         {
-
             string city_1 = "г. Харьков,";
             string city_2 = "г.Харьков,";
             
-
             bool bFirst = true;
 
             while (!Program.EndWork)
@@ -682,9 +812,9 @@ namespace prAlarmMapWF
                         if (cGeoLocData != null)
                         {
                             if (dataPackagesCurrent[i].N03s[0].Status.Trim().Equals("Закрыт"))
-                            {
-                                cGeoLocData
-                            }
+                                cGeoLocData.Closed = true;
+                            else
+                                cGeoLocData.Closed = false;
 
                             string tmp = dataPackagesCurrent[i].Tcentral + "  ";
                             tmp += dataPackagesCurrent[i].Time + "  ";
@@ -701,7 +831,10 @@ namespace prAlarmMapWF
                                     stravoid = stravoid.Substring(index + city_2.Length);
                             }
                             tmp += stravoid;
-                            cGeoLocData.AddrRender = tmp;
+                            if (cGeoLocData.Closed)
+                                cGeoLocData.AddrRender = tmp + "  Закрыт";
+                            else
+                                cGeoLocData.AddrRender = tmp;
                             cGeoLocData.NCentral = dataPackagesCurrent[i].Tcentral;
                             cGeoLocData.Time = dataPackagesCurrent[i].Time;
                             cGeoLocData.Color = dataPackagesCurrent[i].Color;

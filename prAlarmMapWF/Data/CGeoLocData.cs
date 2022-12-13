@@ -16,7 +16,8 @@ namespace prAlarmMapWF.Data
         public string AddrRender { get; set; }
         public string AddrM { get; set; }
         public byte Color { get; set; }
-        public string State { get; set; }
+        //public string State { get; set; }
+        public bool Closed { get; set; }
 
         #region IEquatable method
         public bool Equals(CGeoLocData other)
